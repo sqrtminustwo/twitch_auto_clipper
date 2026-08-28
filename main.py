@@ -7,7 +7,6 @@ import re
 class TwitchChatIRC:
     __HOST = "irc.chat.twitch.tv"
     __DEFAULT_NICK = "justinfan67420"
-    __DEFAULT_PASS = "SCHMOOPIIE"
     __PORT = 6667
 
     __PATTERN = re.compile(r":[^ ]+ PRIVMSG [^ ]+ :([^\r\n]*)[\r\n]")
@@ -16,7 +15,6 @@ class TwitchChatIRC:
 
     def __init__(self, suppress_print=False):
         self.__NICK = self.__DEFAULT_NICK
-        self.__PASS = self.__DEFAULT_PASS
 
         self.suppress_print = suppress_print
 
@@ -26,7 +24,6 @@ class TwitchChatIRC:
         if not self.suppress_print:
             print(f"Connected to {self.__HOST} on port {self.__PORT}")
 
-        self.__send_raw(f"PASS {self.__PASS}")
         self.__send_raw(f"NICK {self.__NICK}")
 
     def __send_raw(self, string):
