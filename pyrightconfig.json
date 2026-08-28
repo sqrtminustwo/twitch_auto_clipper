@@ -1,0 +1,13 @@
+{
+    "include": [
+        "chat",
+        "vars",
+        "utils"
+    ],
+    "exclude": [
+        "**/__pycache__",
+        "**/myvenv"
+    ],
+    "pythonVersion": "3.12",
+    "typeCheckingMode": "standard"
+}
