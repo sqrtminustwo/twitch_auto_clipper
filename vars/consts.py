@@ -6,3 +6,6 @@ EMOTE_VALUE: int = 2
 
 STREAMERS: list = ["ohnePixel"]
 EXCLUDED_WORDS = ["the", "no", "yes", "to", "a", "67"]
+
+
+TWITCH_OAUTH2_URL = "https://id.twitch.tv/oauth2"

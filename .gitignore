@@ -1,2 +1,4 @@
+.env
+links.txt
 myvenv
-myvenv/*
+**/__pycache__
