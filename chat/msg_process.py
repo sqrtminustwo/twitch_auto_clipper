@@ -1,8 +1,10 @@
 import vars.consts as consts
-from sortedcollections.recipes import ValueSortedDict
-from vars.emotes import emotes
 from utils.utils import now
+from vars.emotes import EMOTES
 from vars.consts import CLIPABLE_EMOTES_COUNT, COUNTER_INTERVAL_SECONDS, EXCLUDED_WORDS
+
+from sortedcollections.recipes import ValueSortedDict
+
 
 WORDS_DICT: ValueSortedDict = ValueSortedDict()
 start_of_snapshot = now()
@@ -20,7 +22,7 @@ def msg_process(msg: str) -> None:
             continue
 
         value = consts.COMMON_VALUE
-        if word in emotes:
+        if word in EMOTES:
             value = consts.EMOTE_VALUE
             done = True
 

@@ -1,7 +1,7 @@
 import requests
 from vars.consts import STREAMERS
 
-emotes: set = set()
+EMOTES: set = set()
 
 SEVENTV_BASE: str = "https://7tv.io/v3"
 
@@ -25,8 +25,8 @@ def make_emotes_for_twitchname(twitchname: str) -> None:
 
         largest_emote_set = [e["name"] for e in largest_emote_set]
 
-        emotes.clear()
-        emotes.update(largest_emote_set)
+        EMOTES.clear()
+        EMOTES.update(largest_emote_set)
 
     except Exception as e:
         print(f"Failed to make emotes for {twitchname}:\n{e}")

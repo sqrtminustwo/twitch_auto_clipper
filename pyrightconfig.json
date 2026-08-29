@@ -1,3 +1,4 @@
+// https://www.datacamp.com/tutorial/pyright
 {
     "include": [
         "chat",
@@ -10,5 +11,7 @@
         "**/myvenv"
     ],
     "pythonVersion": "3.12",
-    "typeCheckingMode": "off"
+    "typeCheckingMode": "off",
+    "venvPath": ".",
+    "venv": "myvenv"
 }
