@@ -3,22 +3,22 @@ from vars.consts import STREAMERS
 
 emotes: set = set()
 
-seventv_base: str = "https://7tv.io/v3"
+SEVENTV_BASE: str = "https://7tv.io/v3"
 
-twitch_to_seventv: dict = {STREAMERS[0]: "01G6ZWWNV00009H0PZMRY832FZ"}
+TWITCH_TO_SEVENTV: dict = {STREAMERS[0]: "01G6ZWWNV00009H0PZMRY832FZ"}
 
 
 def make_emotes_for_twitchname(twitchname: str) -> None:
     try:
         user = requests.get(
-            f"{seventv_base}/users/{twitch_to_seventv[twitchname]}"
+            f"{SEVENTV_BASE}/users/{TWITCH_TO_SEVENTV[twitchname]}"
         ).json()
         emote_sets_meta = user["emote_sets"]
 
         largest_emote_set = []
         for emote_set_meta in emote_sets_meta:
             emote_set = requests.get(
-                f"{seventv_base}/emote-sets/{emote_set_meta['id']}"
+                f"{SEVENTV_BASE}/emote-sets/{emote_set_meta['id']}"
             ).json()["emotes"]
             if len(emote_set) > len(largest_emote_set):
                 largest_emote_set = emote_set
