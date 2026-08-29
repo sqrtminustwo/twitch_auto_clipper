@@ -1,4 +1,4 @@
-from auth.twitch_auth import TwitchAuthTokens, get_tokens
+from auth.TwitchAuthTokens import TwitchAuthTokens
 # from chat.TwitchChatIrc import TwitchChatIRC
 # from chat.msg_process import msg_process
 # from vars.emotes import make_emotes_for_twitchname
@@ -10,4 +10,14 @@ from auth.twitch_auth import TwitchAuthTokens, get_tokens
 # bot.listen(streamer, on_message=msg_process)
 # bot.close_connection()
 
-tokens: TwitchAuthTokens = get_tokens()
+from dotenv import load_dotenv
+from os import getenv
+
+load_dotenv()
+
+tokens: TwitchAuthTokens = TwitchAuthTokens(
+    getenv("client_id"), getenv("client_secret")
+)
+
+tokens.initialize_tokens()
+tokens.refresh_tokens()
