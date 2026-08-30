@@ -8,6 +8,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import re
 import requests
 import logging
+import webbrowser
 
 
 class TwitchAuthHandler(BaseHTTPRequestHandler):
@@ -54,19 +55,21 @@ class TwitchAuthTokens:
 
         self.__initialize()
 
-    def __str__(self):
+    def __repr__(self):
         parts = [
-            f"{self.__code = }",
-            f"{self.__access_token = }",
-            f"{self.__refresh_token = }",
-            f"{self.expires_in = }s",
+            f"client_id = {self.__client_id}"
+            f"client_secret = {self.__client_secret}"
+            f"code = {self.__code}",
+            f"access_token = {self.__access_token}",
+            f"refresh_token = {self.__refresh_token}",
+            f"expires_in = {self.expires_in = }",
         ]
 
         total = ""
         for part in parts:
             total += "\n\t" + part
 
-        return "{" + total + "\n}"
+        return f"{self.__class__.__name__}(" + total + "\n)"
 
     def __authorized_method_json(
         self, method, url, params, ok_code, recursive=False
@@ -142,7 +145,7 @@ class TwitchAuthTokens:
 
             local_url = f"http://{httpd.server_name}:{httpd.server_port}"
             httpd.base_url = local_url
-            print(local_url)
+            webbrowser.open(local_url)
 
             t = Thread(target=lambda: httpd.serve_forever())
             t.start()

@@ -19,4 +19,4 @@ def clip_now(streamer: Streamer, tokens: TwitchAuthTokens, duration=60) -> str:
         )
         return response["data"][0]["edit_url"]
     except Exception as e:
-        logging.error(f"Failed to create clip for {streamer.login}: {e}")
+        logging.error(f"Failed to create clip for {streamer}: {e}")

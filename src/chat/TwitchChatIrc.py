@@ -73,7 +73,7 @@ class TwitchChatIRC:
         self.__join_channel(streamer.login)
         self.__SOCKET.settimeout(message_timeout)
 
-        logging.info("Begin retrieving messages:")
+        logging.info("Started retrieving messages:")
 
         time_since_last_message = 0
         try:

@@ -26,6 +26,7 @@ Twitch bot for automated clipping based on chat messages frequency, process:
 - `contextlib` for `ProtectedVar` contextmanager
 - `datetime` (guess)
 - `dotenv` and `os` for .env variables loading
+- `webbrowser` to open browser and authorize with twitch for clipping
 
 ## Roadmap
 
