@@ -38,7 +38,7 @@ class TwitchChatIRC:
         self.connect_to_socket()
         return self
 
-    def __exit__(self, exception_type, exception_value, exception_traceback):
+    def __exit__(self, *args, **kwargs):
         self.close_socket_connection()
 
     def __send_raw(self, string: str) -> None:

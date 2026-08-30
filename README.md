@@ -1,4 +1,4 @@
-# autoclipper
+# twitch_auto_clipper
 
 Twitch bot for automated clipping based on chat messages frequency, process:
 
