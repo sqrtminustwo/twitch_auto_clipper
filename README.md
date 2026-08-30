@@ -7,7 +7,7 @@ Twitch bot for automated clipping based on chat messages frequency, process:
 3. Starts listening for chat of `STREAMERS` trough irc and count frequency of messages, emotes from `EMOTES` list have higher priority, counts for `COUNTER_INTERVAL_SECONDS`, if at the end of interval highest frequency message has count higher than `CLIPABLE_EMOTES_COUNT` uses twitch api with access token acquired in (1) to make a clip
 4. Saves all clips and timestamps in `logs/log[date].csv`
 
-Conventions:
+## Conventions
 
 - Files that define classes are capitalized and do not contain `_`
 - Files that define functions / variables are lower case and can contain `_`
@@ -15,7 +15,7 @@ Conventions:
 - Constant variables are upper case
 - Private class members start with `__`
 
-Used libraries:
+## Used libraries
 
 - `re` for regex matching urls and messages
 - `requests` for working with apis
@@ -26,3 +26,12 @@ Used libraries:
 - `contextlib` for `ProtectedVar` contextmanager
 - `datetime` (guess)
 - `dotenv` and `os` for .env variables loading
+
+## Roadmap
+
+- [x] Analyse chat trough irc
+- [x] Get tokens with twitch api
+- [ ] Make clips from snapshot write to log
+- [ ] Wait for streamers from list to go live -> clips (for each streamer different thread)
+- [ ] Automate clip processing
+- [ ] agi
