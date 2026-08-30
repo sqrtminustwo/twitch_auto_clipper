@@ -14,3 +14,15 @@ Conventions:
 - Variables passed to class constructor will be saved in class
 - Constant variables are upper case
 - Private class members start with `__`
+
+Used libraries:
+
+- `re` for regex matching urls and messages
+- `requests` for working with apis
+- `logging` (guess)
+- `socket` for irc connection to twitch
+- `sortedcollections` for storing words from messages in value (counter) sorted dictionary
+- `threading` for webserver and threads for streamers
+- `contextlib` for `ProtectedVar` contextmanager
+- `datetime` (guess)
+- `dotenv` and `os` for .env variables loading

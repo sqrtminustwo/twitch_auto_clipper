@@ -4,6 +4,7 @@ from vars.Streamer import Streamer
 from vars.consts import CLIPABLE_EMOTES_COUNT, COUNTER_INTERVAL_SECONDS, EXCLUDED_WORDS
 
 from sortedcollections.recipes import ValueSortedDict
+import logging
 
 
 WORDS_DICT: ValueSortedDict = ValueSortedDict()
@@ -37,7 +38,7 @@ def msg_process(msg: str, streamer: Streamer) -> None:
 
     now_ = now()
     if (now_ - start_of_snapshot).total_seconds() > COUNTER_INTERVAL_SECONDS:
-        if consts.DEBUG and words:
+        if words:
             print("\n====================================")
             most_used = WORDS_DICT.peekitem(index=-1)
             _, count = most_used
@@ -47,5 +48,5 @@ def msg_process(msg: str, streamer: Streamer) -> None:
         WORDS_DICT.clear()
         start_of_snapshot = now_
 
-    if consts.DEBUG and WORDS_DICT:
-        print(WORDS_DICT.peekitem(index=-1))
+    if WORDS_DICT:
+        logging.debug(WORDS_DICT.peekitem(index=-1))

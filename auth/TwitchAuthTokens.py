@@ -7,6 +7,7 @@ from threading import Thread
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import re
 import requests
+import logging
 
 
 class TwitchAuthHandler(BaseHTTPRequestHandler):
@@ -86,7 +87,7 @@ class TwitchAuthTokens:
 
             response.raise_for_status()
         except Exception as e:
-            print(f"Failed authorized_get for {url}: {e}")
+            logging.error(f"Failed authorized_get for {url}: {e}")
 
     def __request_tokens_and_set(self, data) -> None:
         data["client_id"] = self.__client_id
@@ -100,7 +101,7 @@ class TwitchAuthTokens:
         self.__refresh_token = response["refresh_token"]
         self.expires_in = response["expires_in"]
 
-        print(self)
+        logging.debug(self)
 
     def refresh(self) -> None:
         with self.__refresh_protector.protecting(True, False) as protecting:
@@ -116,7 +117,7 @@ class TwitchAuthTokens:
                     }
                 )
             except Exception as e:
-                print(f"Failed to refresh tokens: {e}")
+                logging.error(f"Failed to refresh tokens: {e}")
 
     def __initialize(self) -> None:
         try:
@@ -150,4 +151,4 @@ class TwitchAuthTokens:
 
             return self
         except Exception as e:
-            print(f"Failed to initialize twitch tokens: {e}")
+            logging.critical(f"Failed to initialize twitch tokens: {e}")

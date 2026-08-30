@@ -2,6 +2,7 @@ from auth.TwitchAuthTokens import TwitchAuthTokens
 from vars.consts import TWITCH_HELIX_URL, SEVENTV_URL
 
 import requests
+import logging
 
 
 class Streamer:
@@ -17,9 +18,11 @@ class Streamer:
             self.__initialize_id(tokens)
             self.__initialize_seventv_emotes()
 
+            logging.info(f"Initialized {self.login}")
+
             return self
         except Exception as e:
-            print(f"Failed to initialize streamer {self.login}: {e}")
+            logging.error(f"Failed to initialize streamer {self.login}: {e}")
 
     def __initialize_id(self, tokens: TwitchAuthTokens):
         response = tokens.authorized_get_json(
@@ -28,7 +31,7 @@ class Streamer:
         )
         self.id = response["data"][0]["id"]
 
-        print(f"Initialized id for {self.login}")
+        logging.debug(f"Initialized id for {self.login}")
 
     def __initialize_seventv_emotes(self):
         response: requests.Response = requests.get(
@@ -41,4 +44,4 @@ class Streamer:
         self.seventv_emotes.clear()
         self.seventv_emotes.update([emote["name"] for emote in emotes])
 
-        print(f"Initialized emotes for {self.login}")
+        logging.debug(f"Initialized emotes for {self.login}")

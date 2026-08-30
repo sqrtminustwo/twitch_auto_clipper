@@ -4,6 +4,7 @@ from vars.Streamer import Streamer
 
 import socket
 import re
+import logging
 
 
 class TwitchChatIRC:
@@ -13,24 +14,20 @@ class TwitchChatIRC:
     __PATTERN = re.compile(r":[^ ]+ PRIVMSG [^ ]+ :([^\r\n]*)[\r\n]")
     __CURRENT_CHANNEL = None
 
-    def __init__(self, suppress_print=False):
+    def __init__(self):
         self.__NICK = self.__DEFAULT_NICK
-
-        self.suppress_print = suppress_print
 
         self.__SOCKET = socket.socket()
 
     def connect_to_socket(self) -> None:
         self.__SOCKET.connect((self.__HOST, self.__PORT))
-        if not self.suppress_print:
-            print(f"Connected to {self.__HOST} on port {self.__PORT}")
+        logging.info(f"Connected to {self.__HOST} on port {self.__PORT}")
 
         self.__send_raw(f"NICK {self.__NICK}")
 
     def close_socket_connection(self) -> None:
         self.__SOCKET.close()
-        if not self.suppress_print:
-            print("Closed connection")
+        logging.info("Closed connection")
 
     # https://stackoverflow.com/questions/3774328/implementing-use-of-with-object-as-f-in-custom-class-in-python
 
@@ -44,7 +41,7 @@ class TwitchChatIRC:
     def __send_raw(self, string: str) -> None:
         msg = string + "\r\n"
         sent_on_join = self.__SOCKET.send(msg.encode())
-        print("sent_on_join =", sent_on_join, ", len(msg) =", len(msg))
+        logging.debug(f"{sent_on_join =}, {len(msg) =}")
 
     def __recvall(self, buffer_size: int) -> str:
         data = b""
@@ -70,14 +67,13 @@ class TwitchChatIRC:
         streamer: Streamer,
         timeout=None,
         message_timeout=1.0,
-        on_message=lambda msg, streamer: print(f"({streamer.login}): {msg}"),
+        on_message=lambda msg, streamer: None,
         buffer_size=4096,
     ) -> None:
         self.__join_channel(streamer.login)
         self.__SOCKET.settimeout(message_timeout)
 
-        if not self.suppress_print:
-            print("Begin retrieving messages:")
+        logging.info("Begin retrieving messages:")
 
         time_since_last_message = 0
         try:
@@ -97,17 +93,13 @@ class TwitchChatIRC:
                         time_since_last_message += message_timeout
 
                         if time_since_last_message >= timeout:
-                            if not self.suppress_print:
-                                print(
-                                    f"No data received in {timeout} "
-                                    f"seconds. Timing out."
-                                )
+                            logging.debug(
+                                f"No data received in {timeout} seconds. Timing out."
+                            )
                             break
 
         except KeyboardInterrupt:
-            if not self.suppress_print:
-                print("Interrupted by user.")
+            logging.debug("Interrupted by user.")
         except Exception as e:
-            if not self.suppress_print:
-                print("Unknown Error:", e)
+            logging.error("Unknown Error:", e)
             raise e
