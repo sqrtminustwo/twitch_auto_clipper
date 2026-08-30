@@ -1,7 +1,7 @@
 # https://dev.twitch.tv/docs/authentication/getting-tokens-oidc/#oidc-authorization-code-grant-flow
 
 from vars.consts import TWITCH_OAUTH2_URL
-from utils.utils import ProtectedVar
+from utils.ProtectedVar import ProtectedVar
 
 from threading import Thread
 from http.server import HTTPServer, BaseHTTPRequestHandler
@@ -42,20 +42,22 @@ class TwitchAuthTokens:
         for var in [client_id, client_secret]:
             assert type(var) is str and len(var) > 0
 
-        self.client_id = client_id
-        self.client_secret = client_secret
-        self.code = code
+        self.__client_id = client_id
+        self.__client_secret = client_secret
+        self.__code = code
 
-        self.refresh_protector = ProtectedVar(False)
-        self.access_token = access_token
-        self.refresh_token = refresh_token
+        self.__refresh_protector = ProtectedVar(False)
+        self.__access_token = access_token
+        self.__refresh_token = refresh_token
         self.expires_in = expires_in
+
+        self.__initialize()
 
     def __str__(self):
         parts = [
-            f"{self.code = }",
-            f"{self.access_token = }",
-            f"{self.refresh_token = }",
+            f"{self.__code = }",
+            f"{self.__access_token = }",
+            f"{self.__refresh_token = }",
             f"{self.expires_in = }s",
         ]
 
@@ -65,37 +67,64 @@ class TwitchAuthTokens:
 
         return "{" + total + "\n}"
 
+    def authorized_get_json(self, url, params={}):
+        try:
+            response = requests.get(
+                url,
+                headers={
+                    "Authorization": f"Bearer {self.__access_token}",
+                    "Client-Id": self.__client_id,
+                },
+                params=params,
+            )
+
+            if response.status_code == requests.codes.ok:
+                return response.json()
+            if response.status_code == 401:
+                self.refresh()
+                return
+
+            response.raise_for_status()
+        except Exception as e:
+            print(f"Failed authorized_get for {url}: {e}")
+
     def __request_tokens_and_set(self, data) -> None:
-        data["client_id"] = self.client_id
-        data["client_secret"] = self.client_secret
+        data["client_id"] = self.__client_id
+        data["client_secret"] = self.__client_secret
 
-        response = requests.post(f"{TWITCH_OAUTH2_URL}/token", data).json()
+        response = requests.post(f"{TWITCH_OAUTH2_URL}/token", data)
+        response.raise_for_status()
+        response = response.json()
 
-        for name in ["access_token", "refresh_token", "expires_in"]:
-            setattr(self, name, response[name])
+        self.__access_token = response["access_token"]
+        self.__refresh_token = response["refresh_token"]
+        self.expires_in = response["expires_in"]
 
         print(self)
 
-    def refresh_tokens(self) -> None:
-        with self.refresh_protector.protecting(True, False) as protecting:
+    def refresh(self) -> None:
+        with self.__refresh_protector.protecting(True, False) as protecting:
             # Already refreshing
             if protecting:
                 return
 
-            self.__request_tokens_and_set(
-                {
-                    "grant_type": "refresh_token",
-                    "refresh_token": self.refresh_token,
-                }
-            )
+            try:
+                self.__request_tokens_and_set(
+                    {
+                        "grant_type": "refresh_token",
+                        "refresh_token": self.__refresh_token,
+                    }
+                )
+            except Exception as e:
+                print(f"Failed to refresh tokens: {e}")
 
-    def initialize_tokens(self) -> None:
+    def __initialize(self) -> None:
         try:
             httpd = HTTPServer(("localhost", 3000), TwitchAuthHandler)
 
             code: ProtectedVar = ProtectedVar()
             httpd.code = code
-            httpd.client_id = self.client_id
+            httpd.client_id = self.__client_id
 
             local_url = f"http://{httpd.server_name}:{httpd.server_port}"
             httpd.base_url = local_url
@@ -104,19 +133,21 @@ class TwitchAuthTokens:
             t = Thread(target=lambda: httpd.serve_forever())
             t.start()
 
-            code.wait_conditional_on_var()
+            code.wait()
 
             httpd.shutdown()
             t.join()
 
-            self.code = code.get()
+            self.__code = code.get()
 
             self.__request_tokens_and_set(
                 {
                     "grant_type": "authorization_code",
-                    "code": self.code,
+                    "code": self.__code,
                     "redirect_uri": local_url,
                 }
             )
+
+            return self
         except Exception as e:
-            print(f"Failed to get twitch tokens: {e}")
+            print(f"Failed to initialize twitch tokens: {e}")

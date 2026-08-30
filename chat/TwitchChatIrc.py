@@ -1,5 +1,7 @@
 # https://github.com/scmanjarrez/twitch-chat-irc/blob/master/twitch_chat_irc/twitch_chat_irc.py
 
+from vars.Streamer import Streamer
+
 import socket
 import re
 
@@ -18,11 +20,26 @@ class TwitchChatIRC:
 
         self.__SOCKET = socket.socket()
 
+    def connect_to_socket(self) -> None:
         self.__SOCKET.connect((self.__HOST, self.__PORT))
         if not self.suppress_print:
             print(f"Connected to {self.__HOST} on port {self.__PORT}")
 
         self.__send_raw(f"NICK {self.__NICK}")
+
+    def close_socket_connection(self) -> None:
+        self.__SOCKET.close()
+        if not self.suppress_print:
+            print("Closed connection")
+
+    # https://stackoverflow.com/questions/3774328/implementing-use-of-with-object-as-f-in-custom-class-in-python
+
+    def __enter__(self):
+        self.connect_to_socket()
+        return self
+
+    def __exit__(self, exception_type, exception_value, exception_traceback):
+        self.close_socket_connection()
 
     def __send_raw(self, string: str) -> None:
         msg = string + "\r\n"
@@ -48,20 +65,15 @@ class TwitchChatIRC:
     def is_default_user(self) -> bool:
         return self.__NICK == self.__DEFAULT_NICK
 
-    def close_connection(self) -> None:
-        self.__SOCKET.close()
-        if not self.suppress_print:
-            print("Connection closed")
-
     def listen(
         self,
-        channel_name,
+        streamer: Streamer,
         timeout=None,
         message_timeout=1.0,
-        on_message=lambda msg: print(msg),
+        on_message=lambda msg, streamer: print(f"({streamer.login}): {msg}"),
         buffer_size=4096,
     ) -> None:
-        self.__join_channel(channel_name)
+        self.__join_channel(streamer.login)
         self.__SOCKET.settimeout(message_timeout)
 
         if not self.suppress_print:
@@ -78,7 +90,7 @@ class TwitchChatIRC:
 
                     msg_search = re.findall(self.__PATTERN, new_info)
                     for msg in msg_search:
-                        on_message(msg)
+                        on_message(msg, streamer)
 
                 except socket.timeout:
                     if timeout is not None:

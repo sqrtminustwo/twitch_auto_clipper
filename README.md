@@ -6,3 +6,11 @@ Twitch bot for automated clipping based on chat messages frequency, process:
 2. Loads 7tv emojies for streamers from `STREAMERS` list that have 7tv id in `TWITCH_TO_SEVENTV`
 3. Starts listening for chat of `STREAMERS` trough irc and count frequency of messages, emotes from `EMOTES` list have higher priority, counts for `COUNTER_INTERVAL_SECONDS`, if at the end of interval highest frequency message has count higher than `CLIPABLE_EMOTES_COUNT` uses twitch api with access token acquired in (1) to make a clip
 4. Saves all clips and timestamps in `logs/log[date].csv`
+
+Conventions:
+
+- Files that define classes are capitalized and do not contain `_`
+- Files that define functions / variables are lower case and can contain `_`
+- Variables passed to class constructor will be saved in class
+- Constant variables are upper case
+- Private class members start with `__`

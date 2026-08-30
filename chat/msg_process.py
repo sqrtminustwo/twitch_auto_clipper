@@ -1,6 +1,6 @@
 import vars.consts as consts
 from utils.utils import now
-from vars.emotes import EMOTES
+from vars.Streamer import Streamer
 from vars.consts import CLIPABLE_EMOTES_COUNT, COUNTER_INTERVAL_SECONDS, EXCLUDED_WORDS
 
 from sortedcollections.recipes import ValueSortedDict
@@ -10,7 +10,7 @@ WORDS_DICT: ValueSortedDict = ValueSortedDict()
 start_of_snapshot = now()
 
 
-def msg_process(msg: str) -> None:
+def msg_process(msg: str, streamer: Streamer) -> None:
     global start_of_snapshot
 
     words = msg.split(" ")
@@ -22,7 +22,7 @@ def msg_process(msg: str) -> None:
             continue
 
         value = consts.COMMON_VALUE
-        if word in EMOTES:
+        if word in streamer.seventv_emotes:
             value = consts.EMOTE_VALUE
             done = True
 
