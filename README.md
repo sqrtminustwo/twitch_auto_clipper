@@ -27,6 +27,8 @@ Twitch bot for automated clipping based on chat messages frequency, process:
 - `datetime` (guess)
 - `dotenv` and `os` for .env variables loading
 - `webbrowser` to open browser and authorize with twitch for clipping
+- `csv` for logging of clips
+- `time` for sleeping before clipping
 
 ## Roadmap
 

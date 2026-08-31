@@ -3,7 +3,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 COUNTER_INTERVAL_SECONDS: int = 20
-CLIPABLE_EMOTES_COUNT: int = 100
+CLIPABLE_EMOTES_RATIO: float = 0.5
 CLIPABLE_WAIT: int = 10
 COMMON_VALUE: int = 1
 EMOTE_VALUE: int = 2

@@ -9,6 +9,8 @@ import re
 import requests
 import logging
 import webbrowser
+from dotenv import load_dotenv
+from os import getenv
 
 
 class TwitchAuthHandler(BaseHTTPRequestHandler):
@@ -168,3 +170,10 @@ class TwitchAuthTokens:
             return self
         except Exception as e:
             logging.critical(f"Failed to initialize twitch tokens: {e}")
+
+
+load_dotenv()
+
+TOKENS: TwitchAuthTokens = TwitchAuthTokens(
+    getenv("client_id"), getenv("client_secret")
+)

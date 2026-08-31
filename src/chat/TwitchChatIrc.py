@@ -1,6 +1,6 @@
 # https://github.com/scmanjarrez/twitch-chat-irc/blob/master/twitch_chat_irc/twitch_chat_irc.py
 
-from vars.Streamer import Streamer
+from chat.Streamer import Streamer
 
 import socket
 import re
@@ -41,7 +41,7 @@ class TwitchChatIRC:
     def __send_raw(self, string: str) -> None:
         msg = string + "\r\n"
         sent_on_join = self.__SOCKET.send(msg.encode())
-        logging.debug(f"{sent_on_join =}, {len(msg) =}")
+        logging.debug(f"{sent_on_join = }, {len(msg) = }")
 
     def __recvall(self, buffer_size: int) -> str:
         data = b""
@@ -65,7 +65,7 @@ class TwitchChatIRC:
     def listen(
         self,
         streamer: Streamer,
-        timeout=None,
+        timeout=20,
         message_timeout=1.0,
         on_message=lambda msg, streamer: None,
         buffer_size=4096,
@@ -94,9 +94,10 @@ class TwitchChatIRC:
 
                         if time_since_last_message >= timeout:
                             logging.debug(
-                                f"No data received in {timeout} seconds. Timing out."
+                                f"No data received in {timeout} seconds. Checking if live."
                             )
-                            break
+                            if not streamer.is_live():
+                                break
 
         except KeyboardInterrupt:
             logging.debug("Interrupted by user.")
