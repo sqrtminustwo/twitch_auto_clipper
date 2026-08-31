@@ -29,12 +29,14 @@ Twitch bot for automated clipping based on chat messages frequency, process:
 - `webbrowser` to open browser and authorize with twitch for clipping
 - `csv` for logging of clips
 - `time` for sleeping before clipping
+- `dataclasses` for `asdict` to write to csv
+- `pathlib` opening logging file
 
 ## Roadmap
 
 - [x] Analyse chat trough irc
 - [x] Get tokens with twitch api
-- [ ] Make clips from snapshot write to log
+- [x] Make clips from snapshot write to log
 - [ ] Wait for streamers from list to go live -> clips (for each streamer different thread)
 - [ ] Automate clip processing
 - [ ] agi
