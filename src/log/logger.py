@@ -1,4 +1,5 @@
 from utils.utils import now
+from clipper.clip import Clip
 
 import csv
 from dataclasses import asdict, fields, is_dataclass
@@ -29,3 +30,6 @@ class Logger:
             with open(self.path, "a") as csvfile:
                 writer = self.__open_writer(csvfile)
                 writer.writerow(asdict(data))
+
+
+CLIP_LOGGER = Logger("log", Clip)

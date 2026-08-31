@@ -3,11 +3,11 @@ from dataclasses import dataclass
 
 @dataclass
 class Clip:
+    streamer: str
     url: str
-    emote: str
-    emote_count: int
+    emote: str = None
+    emote_count: int = 0
+    ratio: int = 0
 
-    def __init__(self, url, emote=None, emote_count=0):
+    def __init__(self, url):
         self.url = url
-        self.emote = emote
-        self.emote_count = emote_count

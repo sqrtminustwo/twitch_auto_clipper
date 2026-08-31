@@ -37,6 +37,7 @@ Twitch bot for automated clipping based on chat messages frequency, process:
 - [x] Analyse chat trough irc
 - [x] Get tokens with twitch api
 - [x] Make clips from snapshot write to log
-- [ ] Wait for streamers from list to go live -> clips (for each streamer different thread)
+- [x] Checks if streamers from list are live -> clips (for each streamer different thread)
 - [ ] Automate clip processing
+- [ ] Optimize clipping criteria
 - [ ] agi

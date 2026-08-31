@@ -1,6 +1,7 @@
 # https://github.com/scmanjarrez/twitch-chat-irc/blob/master/twitch_chat_irc/twitch_chat_irc.py
 
 from chat.Streamer import Streamer
+from utils.utils import now
 
 import socket
 import re
@@ -67,7 +68,6 @@ class TwitchChatIRC:
         streamer: Streamer,
         timeout=20,
         message_timeout=1.0,
-        on_message=lambda msg, streamer: None,
         buffer_size=4096,
     ) -> None:
         self.__join_channel(streamer.login)
@@ -75,6 +75,7 @@ class TwitchChatIRC:
 
         logging.info("Started retrieving messages:")
 
+        streamer.start_of_snapshot = now()
         time_since_last_message = 0
         try:
             while True:
@@ -86,7 +87,7 @@ class TwitchChatIRC:
 
                     msg_search = re.findall(self.__PATTERN, new_info)
                     for msg in msg_search:
-                        on_message(msg, streamer)
+                        streamer.on_message(msg)
 
                 except socket.timeout:
                     if timeout is not None:
