@@ -127,7 +127,3 @@ The log contains information about generated clips and their timestamps, allowin
 Manually watching an entire stream to find moments worth clipping is time-consuming.
 
 Twitch Auto Clipper uses the audience's reaction as a signal: when chat suddenly becomes active around a particular message or emote, the bot can automatically capture the moment.
-
-## License
-
-[Add your license here]
