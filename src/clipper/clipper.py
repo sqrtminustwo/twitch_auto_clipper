@@ -3,8 +3,9 @@
 
 from auth.TwitchAuthTokens import TOKENS
 from vars.consts import TWITCH_HELIX_URL, CLIPABLE_WAIT
-from clipper.clip import Clip
+from clipper.Clip import Clip
 from log.logger import Logger
+from utils.utils import now
 
 import logging
 import time
@@ -13,15 +14,14 @@ import time
 CLIP_LOGGER = Logger(Clip)
 
 
-def clip_and_log(clip: Clip, duration=60) -> None:
-    assert duration >= 5 and duration <= 60
-
+def clip_and_log(clip: Clip) -> None:
     time.sleep(CLIPABLE_WAIT)
 
     try:
+        clip.set_timestamp(now())
         response = TOKENS.authorized_post(
             f"{TWITCH_HELIX_URL}/clips",
-            {"broadcaster_id": clip.broadcaster_id, "duration": duration},
+            {"broadcaster_id": clip.broadcaster_id, "duration": clip.duration},
             ok_code=202,
         )
         clip.url = response["data"][0]["edit_url"]

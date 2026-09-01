@@ -24,7 +24,7 @@ from vars.consts import DEBUG_STREAMER
 #     thread.join()
 
 
-streamer = STREAMERS[DEBUG_STREAMER].initialize()
+streamer = STREAMERS[1].initialize()
 
 twitch_chat_irc = TwitchChatIRC()
 with twitch_chat_irc as connection:

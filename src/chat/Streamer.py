@@ -1,5 +1,5 @@
 from auth.TwitchAuthTokens import TOKENS
-from chat.WordEntry import WordEntry
+from chat.Message import Message
 from vars.consts import (
     COMMON_VALUE,
     EMOTE_VALUE,
@@ -11,7 +11,7 @@ from vars.consts import (
     CLIPABLE_EMOTES_RATIO,
 )
 from clipper.clipper import clip_and_log
-from clipper.clip import Clip
+from clipper.Clip import Clip
 from utils.utils import now
 
 import requests
@@ -94,7 +94,7 @@ class Streamer:
         words = set(msg.lower().split(" "))
 
         for word in words:
-            word = WordEntry(word)
+            word = Message(word)
 
             if word in EXCLUDED_WORDS:
                 continue
@@ -106,20 +106,20 @@ class Streamer:
             else:
                 self.words_dict[word] = value
 
-        if self.words_dict:
-            logging.debug(f"{self}: {self.words_dict.peekitem(index=-1)}")
+        # if self.words_dict:
+        #     logging.debug(f"{self}: {self.words_dict.peekitem(index=-1)}")
 
         self.message_count += 1
         now_ = now()
 
         most_used = self.words_dict.peekitem(index=-1)
-        emote, count = most_used
+        message, count = most_used
         # ration can be larger than 1, emojies have higher count than 1
         ratio_to_all = count / self.message_count
         clipable = ratio_to_all > CLIPABLE_EMOTES_RATIO
 
-        if clipable:
-            emote.became_popular = now_
+        if clipable and message.became_popular is None:
+            message.became_popular = now_
 
         if (now_ - self.start_of_snapshot).total_seconds() > COUNTER_INTERVAL_SECONDS:
             if self.words_dict:
@@ -135,7 +135,7 @@ class Streamer:
 
                     clip: Clip = Clip(
                         broadcaster_id=self.id,
-                        emote=emote,
+                        message=message,
                         emote_count=count,
                         ratio=ratio_to_all,
                     )
