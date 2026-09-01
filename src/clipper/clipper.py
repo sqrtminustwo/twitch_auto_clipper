@@ -2,13 +2,24 @@
 # https://dev.twitch.tv/docs/api/reference#create-clip
 
 from auth.TwitchAuthTokens import TOKENS
-from vars.consts import TWITCH_HELIX_URL
+from vars.consts import OUTPUT_DIR, TWITCH_HELIX_URL, CLIPABLE_WAIT
 from clipper.clip import Clip
+from log.logger import Logger
 
 import logging
+import time
 
 
-def clip_now(broadcaster_id, duration=60) -> Clip:
+CLIP_LOGGER = Logger(Clip)
+
+
+def clip_and_log(clip: Clip) -> None:
+    time.sleep(CLIPABLE_WAIT)
+    clip.url = clip_now(clip.broadcaster_id)
+    CLIP_LOGGER.write(clip)
+
+
+def clip_now(broadcaster_id, duration=60) -> str:
     assert duration >= 5 and duration <= 60
 
     try:
@@ -17,6 +28,6 @@ def clip_now(broadcaster_id, duration=60) -> Clip:
             {"broadcaster_id": broadcaster_id, "duration": duration},
             ok_code=202,
         )
-        return Clip(response["data"][0]["edit_url"])
+        return response["data"][0]["edit_url"]
     except Exception as e:
         logging.error(f"Failed to create clip for {broadcaster_id}: {e}")

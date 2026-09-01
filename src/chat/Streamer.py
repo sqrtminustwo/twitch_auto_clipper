@@ -8,14 +8,11 @@ from vars.consts import (
     EXCLUDED_WORDS,
     COUNTER_INTERVAL_SECONDS,
     CLIPABLE_EMOTES_RATIO,
-    CLIPABLE_WAIT,
 )
-from clipper.clipper import clip_now
-from utils.utils import now
+from clipper.clipper import clip_and_log
 from clipper.clip import Clip
-from log.logger import CLIP_LOGGER
+from utils.utils import now
 
-import time
 import requests
 import logging
 from sortedcollections.recipes import ValueSortedDict
@@ -105,8 +102,8 @@ class Streamer:
             else:
                 self.words_dict[word_lower] = value
 
-        if self.words_dict:
-            logging.debug(f"{self}: {self.words_dict.peekitem(index=-1)}")
+        # if self.words_dict:
+        # logging.debug(f"{self}: {self.words_dict.peekitem(index=-1)}")
 
         self.take_snapshot_if_time()
 
@@ -116,37 +113,33 @@ class Streamer:
         now_ = now()
         if (now_ - self.start_of_snapshot).total_seconds() > COUNTER_INTERVAL_SECONDS:
             if self.words_dict:
-                print("\n====================================")
+                logging.info("====================================")
                 most_used = self.words_dict.peekitem(index=-1)
                 emote, count = most_used
                 # ration can be larger than 1, emojies have higher count than 1
                 ratio_to_all = count / self.message_count
                 clipable = ratio_to_all > CLIPABLE_EMOTES_RATIO
-                print(f"SNAPSHOT {now_}: {most_used}")
-                logging.info(f"P{ratio_to_all = }, {count = }, {self.message_count = }")
-                print(f"{clipable = }")
-                print("====================================\n")
+                logging.info(f"SNAPSHOT for {self} at {now_}: {most_used}")
+                logging.info(f"{ratio_to_all = }, {count = }, {self.message_count = }")
+                logging.info(f"{clipable = }")
+                logging.info("====================================\n")
 
                 if clipable:
                     if self.clipping_thread and self.clipping_thread.is_alive():
                         self.clipping_thread.join()
-                    self.clipping_thread = Thread(
-                        target=self.clip_and_log, args=(emote, count, ratio_to_all)
+
+                    clip: Clip = Clip(
+                        broadcaster_id=self.id,
+                        emote=emote,
+                        emote_count=count,
+                        ratio=ratio_to_all,
                     )
+                    self.clipping_thread = Thread(target=clip_and_log, args=(clip,))
                     self.clipping_thread.start()
 
                 self.message_count = 0
                 self.words_dict.clear()
                 self.start_of_snapshot = now_
-
-    def clip_and_log(self, emote: str, count: int, ratio: int):
-        time.sleep(CLIPABLE_WAIT)
-        clip: Clip = clip_now(self.id)
-        clip.streamer = self.login
-        clip.emote = emote
-        clip.emote_count = count
-        clip.ratio = ratio
-        CLIP_LOGGER.write(clip)
 
 
 STREAMERS: list = [Streamer(name) for name in STREAMERS_NAMES]

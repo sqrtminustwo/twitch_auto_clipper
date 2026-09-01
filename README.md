@@ -31,6 +31,8 @@ Twitch bot for automated clipping based on chat messages frequency, process:
 - `time` for sleeping before clipping
 - `dataclasses` for `asdict` to write to csv
 - `pathlib` opening logging file
+- `dacite` for csv log to list of classes for sorting
+- `sys` and `os` for command line arguments to sorter
 
 ## Roadmap
 
@@ -38,6 +40,8 @@ Twitch bot for automated clipping based on chat messages frequency, process:
 - [x] Get tokens with twitch api
 - [x] Make clips from snapshot write to log
 - [x] Checks if streamers from list are live -> clips (for each streamer different thread)
+- [ ] Tests for frequency / clipping / failed clipping (dependency injection)
+- [ ] Webserver for real time constants adjustment (dont forget to mutex lock constants)
 - [ ] Automate clip processing
 - [ ] Optimize clipping criteria
 - [ ] agi

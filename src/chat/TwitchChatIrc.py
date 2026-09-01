@@ -86,6 +86,10 @@ class TwitchChatIRC:
                         self.__send_raw("PONG :tmi.twitch.tv")
 
                     msg_search = re.findall(self.__PATTERN, new_info)
+
+                    if len(msg_search) > 0:
+                        time_since_last_message = 0
+
                     for msg in msg_search:
                         streamer.on_message(msg)
 
