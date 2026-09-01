@@ -1,5 +1,6 @@
-from chat.Streamer import Streamer, STREAMERS
+from chat.Streamer import STREAMERS
 from chat.TwitchChatIrc import TwitchChatIRC
+from vars.consts import DEBUG_STREAMER
 
 # from threading import Thread
 #
@@ -23,8 +24,7 @@ from chat.TwitchChatIrc import TwitchChatIRC
 #     thread.join()
 
 
-# streamer = STREAMERS[2].initialize()
-streamer = Streamer("Arky").initialize()
+streamer = STREAMERS[DEBUG_STREAMER].initialize()
 
 twitch_chat_irc = TwitchChatIRC()
 with twitch_chat_irc as connection:

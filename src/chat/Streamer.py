@@ -1,4 +1,5 @@
 from auth.TwitchAuthTokens import TOKENS
+from chat.WordEntry import WordEntry
 from vars.consts import (
     COMMON_VALUE,
     EMOTE_VALUE,
@@ -31,6 +32,8 @@ class Streamer:
         self.clipping_thread: Thread = None
         self.start_of_snapshot = None
 
+        self.live = True
+
     # https://dev.twitch.tv/docs/api/reference/#get-users
     def initialize(self) -> "Streamer":
         self.__initialize_id()
@@ -51,7 +54,7 @@ class Streamer:
         logging.debug(f"Initialized id for {self}")
 
     def get_message_value(self, msg):
-        if msg in self.seventv_emotes or msg.lower() in self.seventv_emotes:
+        if msg.lower() in self.seventv_emotes:
             return EMOTE_VALUE
         return COMMON_VALUE
 
@@ -65,7 +68,7 @@ class Streamer:
 
             emotes = response["emote_set"]["emotes"]
             self.seventv_emotes.clear()
-            self.seventv_emotes.update([emote["name"] for emote in emotes])
+            self.seventv_emotes.update([emote["name"].lower() for emote in emotes])
 
             logging.debug(f"Initialized emotes for {self}")
         except Exception:
@@ -88,37 +91,39 @@ class Streamer:
 
     def on_message(self, msg: str) -> None:
         # set to avoid spam messages
-        words = set(msg.split(" "))
+        words = set(msg.lower().split(" "))
 
         for word in words:
-            word_lower = word.lower()
-            if word_lower in EXCLUDED_WORDS:
+            word = WordEntry(word)
+
+            if word in EXCLUDED_WORDS:
                 continue
 
             value = self.get_message_value(word)
 
-            if word_lower in self.words_dict:
-                self.words_dict[word_lower] += value
+            if word in self.words_dict:
+                self.words_dict[word] += value
             else:
-                self.words_dict[word_lower] = value
+                self.words_dict[word] = value
 
-        # if self.words_dict:
-        # logging.debug(f"{self}: {self.words_dict.peekitem(index=-1)}")
+        if self.words_dict:
+            logging.debug(f"{self}: {self.words_dict.peekitem(index=-1)}")
 
-        self.take_snapshot_if_time()
-
-    def take_snapshot_if_time(self) -> None:
         self.message_count += 1
-
         now_ = now()
+
+        most_used = self.words_dict.peekitem(index=-1)
+        emote, count = most_used
+        # ration can be larger than 1, emojies have higher count than 1
+        ratio_to_all = count / self.message_count
+        clipable = ratio_to_all > CLIPABLE_EMOTES_RATIO
+
+        if clipable:
+            emote.became_popular = now_
+
         if (now_ - self.start_of_snapshot).total_seconds() > COUNTER_INTERVAL_SECONDS:
             if self.words_dict:
                 logging.info("====================================")
-                most_used = self.words_dict.peekitem(index=-1)
-                emote, count = most_used
-                # ration can be larger than 1, emojies have higher count than 1
-                ratio_to_all = count / self.message_count
-                clipable = ratio_to_all > CLIPABLE_EMOTES_RATIO
                 logging.info(f"SNAPSHOT for {self} at {now_}: {most_used}")
                 logging.info(f"{ratio_to_all = }, {count = }, {self.message_count = }")
                 logging.info(f"{clipable = }")

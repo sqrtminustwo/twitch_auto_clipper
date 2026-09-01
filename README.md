@@ -43,5 +43,13 @@ Twitch bot for automated clipping based on chat messages frequency, process:
 - [ ] Tests for frequency / clipping / failed clipping (dependency injection)
 - [ ] Webserver for real time constants adjustment (dont forget to mutex lock constants)
 - [ ] Automate clip processing
+  - [ ] Analyse where highlite actually happend based start streak for emoji
+  - [ ] Cut on start sentence before that with ffmpeg
+  - [ ] Cut end on end sentence
+- [ ] Automate clip editing
+  - [ ] WebCam detection with YOLOv11
+  - [ ] `pyautoflip` for center of attention
+  - [ ] `ffmpeg` to `crop` and make resulting video
+  - [ ] (OPTIONAL) local auto dubbing, add dubbed text to video
 - [ ] Optimize clipping criteria
 - [ ] agi
