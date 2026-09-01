@@ -1,55 +1,133 @@
-# twitch_auto_clipper
+# Twitch Auto Clipper
 
-Twitch bot for automated clipping based on chat messages frequency, process:
+Automatically create Twitch clips when chat activity spikes.
 
-1. Authorizes you trough local webserver to get token with `clips:edit` scope (will automatically refresh token before its expiry, note that refreshing can fail in which case re authorization trough webserver would be required)
-2. Loads 7tv emojies for streamers from `STREAMERS` list that have 7tv id in `TWITCH_TO_SEVENTV`
-3. Starts listening for chat of `STREAMERS` trough irc and count frequency of messages, emotes from `EMOTES` list have higher priority, counts for `COUNTER_INTERVAL_SECONDS`, if at the end of interval highest frequency message has count higher than `CLIPABLE_EMOTES_COUNT` uses twitch api with access token acquired in (1) to make a clip
-4. Saves all clips and timestamps in `logs/log[date].csv`
+Twitch Auto Clipper monitors Twitch chat and detects moments where a large number of viewers send the same emote/message within a short period of time. When activity exceeds a configurable threshold, it automatically creates a Twitch clip.
 
-## Conventions
+## Features
 
-- Files that define classes are capitalized and do not contain `_`
-- Files that define functions / variables are lower case and can contain `_`
-- Variables passed to class constructor will be saved in class
-- Constant variables are upper case
-- Private class members start with `__`
+- Automatically handles Twitch OAuth token refresh
+- Automatically monitors multiple Twitch streams
+- Detects spikes in chat activity
+- Supports custom emotes/messages as clipping triggers
+- Optional 7TV emote support
+- Runs each streamer independently
+- Logs created clips and timestamps to CSV
 
-## Used libraries
+## How it works
 
-- `re` for regex matching urls and messages
-- `requests` for working with apis
-- `logging` (guess)
-- `socket` for irc connection to twitch
-- `sortedcollections` for storing words from messages in value (counter) sorted dictionary
-- `threading` for webserver and threads for streamers
-- `contextlib` for `ProtectedVar` contextmanager
-- `datetime` (guess)
-- `dotenv` and `os` for .env variables loading
-- `webbrowser` to open browser and authorize with twitch for clipping
-- `csv` for logging of clips
-- `time` for sleeping before clipping
-- `dataclasses` for `asdict` to write to csv
-- `pathlib` opening logging file
-- `dacite` for csv log to list of classes for sorting
-- `sys` and `os` for command line arguments to sorter
+```text
+Twitch chat
+     │
+     ▼
+Collect messages
+     │
+     ▼
+Count messages / emotes
+     │
+     ▼
+Detect activity spike
+     │
+     ▼
+Threshold exceeded?
+     │
+    YES
+     ▼
+Create Twitch clip
+     │
+     ▼
+Save clip information
+     │
+     ▼
+log/output/log[date].csv
+```
+
+## Installation
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/sqrtminustwo/twitch_auto_clipper
+cd twitch_auto_clipper
+```
+
+### 2. Create your Twitch application
+
+Create a Twitch application through the [Twitch developer console](https://dev.twitch.tv/docs/authentication/register-app).
+
+Create a `.env` file:
+
+```env
+client_id=YOUR_CLIENT_ID
+client_secret=YOUR_CLIENT_SECRET
+```
+
+### 3. Install dependencies
+
+```bash
+python -m venv myvenv
+source myvenv/bin/activate
+pip install -r requirements.txt
+```
+
+### 4. Start the bot
+
+```bash
+python src/main.py
+```
+
+A browser window will open to authorize the application with the required `clips:edit` permission.
+
+## Configuration
+
+Configure the streamers and clipping criteria in the project configuration.
+
+The bot can:
+
+- monitor multiple streamers simultaneously
+- assign different 7TV emotes to streamers
+- prioritize specific emotes
+- configure the chat analysis interval
+- configure the message frequency required to trigger a clip
+
+## 7TV support
+
+The bot can optionally load 7TV emotes for configured streamers.
+
+This allows 7TV emotes to be used as clipping signals in addition to normal Twitch chat messages.
+
+## Logging
+
+Created clips are saved to:
+
+```text
+log/output/log[date].csv
+```
+
+The log contains information about generated clips and their timestamps, allowing clips to be processed later.
 
 ## Roadmap
 
-- [x] Analyse chat trough irc
-- [x] Get tokens with twitch api
-- [x] Make clips from snapshot write to log
-- [x] Checks if streamers from list are live -> clips (for each streamer different thread)
-- [ ] Tests for frequency / clipping / failed clipping (dependency injection)
-- [ ] Webserver for real time constants adjustment (dont forget to mutex lock constants)
-- [ ] Automate clip processing
-  - [ ] Analyse where highlite actually happend based start streak for emoji
-  - [ ] Cut on start sentence before that with ffmpeg
-  - [ ] Cut end on end sentence
-- [ ] Automate clip editing
-  - [ ] WebCam detection with YOLOv11
-  - [ ] `pyautoflip` for center of attention
-  - [ ] `ffmpeg` to `crop` and make resulting video
-  - [ ] (OPTIONAL) local auto dubbing, add dubbed text to video
+- [x] Analyze Twitch chat through IRC
+- [x] Twitch OAuth authentication
+- [x] Automatically create clips
+- [x] Monitor multiple live streamers
+- [x] Save clips to a log
+- [ ] Add automated tests
+- [ ] Real-time configuration through webserver
+- [ ] Automatically identify the exact highlight moment
+- [ ] Automatically trim clips with FFmpeg
+- [ ] Detect webcam / subject position
+- [ ] Automatically crop clips for vertical video
+- [ ] Automatically edit clips
 - [ ] Optimize clipping criteria
-- [ ] agi
+
+## Why?
+
+Manually watching an entire stream to find moments worth clipping is time-consuming.
+
+Twitch Auto Clipper uses the audience's reaction as a signal: when chat suddenly becomes active around a particular message or emote, the bot can automatically capture the moment.
+
+## License
+
+[Add your license here]
