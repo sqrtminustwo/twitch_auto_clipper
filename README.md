@@ -90,22 +90,6 @@ The bot can:
 - configure the chat analysis interval
 - configure the message frequency required to trigger a clip
 
-## 7TV support
-
-The bot can optionally load 7TV emotes for configured streamers.
-
-This allows 7TV emotes to be used as clipping signals in addition to normal Twitch chat messages.
-
-## Logging
-
-Created clips are saved to:
-
-```text
-log/output/log[date].csv
-```
-
-The log contains information about generated clips and their timestamps, allowing clips to be processed later.
-
 ## Roadmap
 
 - [x] Analyze Twitch chat through IRC
@@ -114,13 +98,7 @@ The log contains information about generated clips and their timestamps, allowin
 - [x] Monitor multiple live streamers
 - [x] Save clips to a log
 - [ ] Add automated tests
-- [ ] Real-time configuration through webserver
-- [ ] Automatically identify the exact highlight moment
-- [ ] Automatically trim clips with FFmpeg
-- [ ] Detect webcam / subject position
-- [ ] Automatically crop clips for vertical video
-- [ ] Automatically edit clips
-- [ ] Optimize clipping criteria
+- [ ] Make pip package with callback that takes Clip and constants as parameters to listener
 
 ## Why?
 
