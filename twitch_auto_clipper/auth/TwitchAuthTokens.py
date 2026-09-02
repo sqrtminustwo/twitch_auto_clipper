@@ -28,7 +28,13 @@ class TwitchAuthHandler(BaseHTTPRequestHandler):
             return
 
         if match := re.search(self.__CODE_RE, self.path):
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.wfile.write(
+                "Authentication is done, you can close this tab.".encode("utf-8")
+            )
             code.set(match.group(1))
+            return
 
 
 class TwitchAuthTokens:

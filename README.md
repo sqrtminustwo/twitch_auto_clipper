@@ -12,7 +12,6 @@ Twitch Auto Clipper monitors Twitch chat and detects moments where a large numbe
 - Supports custom emotes/messages as clipping triggers
 - Optional 7TV emote support
 - Runs each streamer independently
-- Logs created clips and timestamps to CSV
 
 ## How it works
 
@@ -36,10 +35,7 @@ Threshold exceeded?
 Create Twitch clip
      │
      ▼
-Save clip information
-     │
-     ▼
-log/output/log[date].csv
+Call on_clip callback
 ```
 
 ## Installation
