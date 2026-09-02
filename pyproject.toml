@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling >= 1.32"]
+build-backend = "hatchling.build"
+
+[project]
+name = "twitch_auto_clipper_sqrtminusone"
+version = "0.1.2"
+authors = [
+  { name="Maksym Ziborov", email="twitch_auto_clipper@blkflag.org" },
+]
+description = "Automatically create Twitch clips when chat activity spikes"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3.8",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "requests>=2.34.2",
+    "sortedcollections>=2.1.0",
+    "dacite>=1.9.2"
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[project.urls]
+source = "https://github.com/sqrtminustwo/twitch_auto_clipper"

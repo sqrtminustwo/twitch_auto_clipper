@@ -20,7 +20,7 @@ Minimum Python version supported by `twitch_auto_clipper` is 3.8.
 
 ```python
 
-from twitch_auto_clipper import TwitchAutoClipper
+from twitch_auto_clipper_sqrtminusone.TwitchAutoClipper import TwitchAutoClipper
 
 clipper = TwitchAutoClipper(
     ["Marlon", "Lacy"],
