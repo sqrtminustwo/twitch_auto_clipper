@@ -1,8 +1,49 @@
-# Twitch Auto Clipper
+# twitch_auto_clipper
 
 Automatically create Twitch clips when chat activity spikes.
 
 Twitch Auto Clipper monitors Twitch chat and detects moments where a large number of viewers send the same emote/message within a short period of time. When activity exceeds a configurable threshold, it automatically creates a Twitch clip.
+
+[demo]
+
+## Installation
+
+```bash
+pip install twitch_auto_clipper
+```
+
+## Requirements
+
+Minimum Python version supported by `twitch_auto_clipper` is 3.8.
+
+## Quick start
+
+```python
+
+from twitch_auto_clipper import TwitchAutoClipper
+
+clipper = TwitchAutoClipper(
+    ["Marlon", "Lacy"],
+    "YOUR_CLIENT_ID",
+    "YOUR_CLIENT_SECRET",
+    on_clip=lambda clip: print(clip),
+    common_value=1,
+    emote_value=2,
+    clipable_message_ratio=0.5,
+)
+
+clipper.start()
+clipper.join()
+```
+
+> [!NOTE]
+> In case multiple streamers are given, `on_clip` will be called from multiple threads. Keep that in mind and use the appropriate [threading](https://docs.python.org/3/library/threading.html) Python API there.
+
+> [!IMPORTANT]
+> `client_id` and `client_secret` are saved in [TwitchAuthTokens](https://github.com/sqrtminustwo/twitch_auto_clipper/blob/40571716c73c95119f9743ba190808602a953f68/twitch_auto_clipper/auth/TwitchAuthTokens.py) and only sent to the Twitch API. Of course, you are encouraged to skim through the code to make sure your credentials are not sent where you do not want them to be sent.
+
+> [!IMPORTANT]
+> Upon initialization of [TwitchAutoClipper](https://github.com/sqrtminustwo/twitch_auto_clipper/blob/40571716c73c95119f9743ba190808602a953f68/twitch_auto_clipper/TwitchAutoClipper.py), your web browser should open to gain clipping permission for your Twitch account (as shown in the demo). The code responsible for this is also in [TwitchAuthTokens](https://github.com/sqrtminustwo/twitch_auto_clipper/blob/40571716c73c95119f9743ba190808602a953f68/twitch_auto_clipper/auth/TwitchAuthTokens.py). Note that it is not necessary to keep this tab open after initialization is complete for the script to work properly.
 
 ## Features
 
@@ -37,54 +78,6 @@ Create Twitch clip
      ▼
 Call on_clip callback
 ```
-
-## Installation
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/sqrtminustwo/twitch_auto_clipper
-cd twitch_auto_clipper
-```
-
-### 2. Create your Twitch application
-
-Create a Twitch application through the [Twitch developer console](https://dev.twitch.tv/docs/authentication/register-app).
-
-Create a `.env` file:
-
-```env
-client_id=YOUR_CLIENT_ID
-client_secret=YOUR_CLIENT_SECRET
-```
-
-### 3. Install dependencies
-
-```bash
-python -m venv myvenv
-source myvenv/bin/activate
-pip install -r requirements.txt
-```
-
-### 4. Start the bot
-
-```bash
-python src/main.py
-```
-
-A browser window will open to authorize the application with the required `clips:edit` permission.
-
-## Configuration
-
-Configure the streamers and clipping criteria in the project configuration.
-
-The bot can:
-
-- monitor multiple streamers simultaneously
-- assign different 7TV emotes to streamers
-- prioritize specific emotes
-- configure the chat analysis interval
-- configure the message frequency required to trigger a clip
 
 ## Roadmap
 

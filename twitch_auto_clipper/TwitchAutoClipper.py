@@ -22,7 +22,7 @@ class TwitchAutoClipper:
         emote_value: int = 2,
         excluded_words: set[str] = {"the", "you", "no", "yes", "to", "a", "is", "67"},
         logging_handlers: list[logging.Handler] = [logging.StreamHandler()],
-        logging_level=logging.INFO,
+        logging_level=logging.DEBUG,
     ):
         assert streamers_names, f"{streamers_names = }, which is invalid, can't clip!"
         assert client_id, f"{client_id = }, which is invalid, won't be able to clip!"
