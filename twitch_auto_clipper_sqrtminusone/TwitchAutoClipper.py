@@ -34,7 +34,7 @@ class TwitchAutoClipper:
         logging.basicConfig(level=logging_level, handlers=logging_handlers)
 
         self.__context = TwitchAutoClipperContext(
-            tokens=TwitchAuthTokens(client_id, client_secret),
+            tokens=TwitchAuthTokens(client_id, client_secret).initialize(),
             on_clip=on_clip,
             excluded_words=excluded_words,
             counter_interval_seconds=counter_interval_seconds,

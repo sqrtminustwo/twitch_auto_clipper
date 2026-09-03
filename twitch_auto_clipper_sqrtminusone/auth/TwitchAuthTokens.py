@@ -1,6 +1,6 @@
 # https://dev.twitch.tv/docs/authentication/getting-tokens-oidc/#oidc-authorization-code-grant-flow
 
-from twitch_auto_clipper_sqrtminusone.ApiUrls import ApiUrls
+from twitch_auto_clipper_sqrtminusone.Urls import Urls
 from twitch_auto_clipper_sqrtminusone.utils.ProtectedVar import ProtectedVar
 
 from threading import Thread
@@ -22,7 +22,7 @@ class TwitchAuthHandler(BaseHTTPRequestHandler):
             self.send_response(301)
             self.send_header(
                 "Location",
-                f"{ApiUrls.TWITCH_OAUTH2_URL}/authorize?response_type=code&client_id={client_id}&redirect_uri={self.server.base_url}&scope=clips:edit",
+                f"{Urls.TWITCH_OAUTH2_URL}/authorize?response_type=code&client_id={client_id}&redirect_uri={self.server.base_url}&scope=clips:edit",
             )
             self.end_headers()
             return
@@ -30,6 +30,7 @@ class TwitchAuthHandler(BaseHTTPRequestHandler):
         if match := re.search(self.__CODE_RE, self.path):
             self.send_response(200)
             self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.end_headers()
             self.wfile.write(
                 "Authentication is done, you can close this tab.".encode("utf-8")
             )
@@ -46,6 +47,9 @@ class TwitchAuthTokens:
         access_token=None,
         refresh_token=None,
         expires_in=0,
+        # dependency injections
+        requests=requests,
+        webbrowser=webbrowser,
     ):
         for var in [client_id, client_secret]:
             assert type(var) is str and len(var) > 0
@@ -59,21 +63,24 @@ class TwitchAuthTokens:
         self.__refresh_token = refresh_token
         self.expires_in = expires_in
 
-        self.__initialize()
+        # for tests
+        self.__requests = requests
+        self.__webbrowser = webbrowser
+        self.__webserver_live = ProtectedVar(False)
 
     def __repr__(self):
         parts = [
-            f"client_id = {self.__client_id}"
-            f"client_secret = {self.__client_secret}"
-            f"code = {self.__code}",
-            f"access_token = {self.__access_token}",
-            f"refresh_token = {self.__refresh_token}",
-            f"expires_in = {self.expires_in = }",
+            f"client_id = {repr(self.__client_id)}",
+            f"client_secret = {repr(self.__client_secret)}",
+            f"code = {repr(self.__code)}",
+            f"access_token = {repr(self.__access_token)}",
+            f"refresh_token = {repr(self.__refresh_token)}",
+            f"expires_in = {self.expires_in}",
         ]
 
         total = ""
         for part in parts:
-            total += "\n\t" + part
+            total += "\n\t" + part + ","
 
         return f"{self.__class__.__name__}(" + total + "\n)"
 
@@ -98,7 +105,7 @@ class TwitchAuthTokens:
                     raise Exception("Refresh failed")
                 self.__refresh()
                 return self.__authorized_method_json(
-                    self, method, url, params, recursive=True
+                    method, url, params, ok_code, recursive=True
                 )
 
             response.raise_for_status()
@@ -106,24 +113,22 @@ class TwitchAuthTokens:
             logging.error(f"Failed authorized_get for {url}: {e}")
 
     def authorized_get_json(self, url, params={}):
-        return self.__authorized_method_json(requests.get, url, params, 200)
+        return self.__authorized_method_json(self.__requests.get, url, params, 200)
 
-    def authorized_post(self, url, params, ok_code) -> requests.Response:
-        return self.__authorized_method_json(requests.post, url, params, ok_code)
+    def authorized_post_json(self, url, params, ok_code) -> requests.Response:
+        return self.__authorized_method_json(self.__requests.post, url, params, ok_code)
 
     def __request_tokens_and_set(self, data) -> None:
         data["client_id"] = self.__client_id
         data["client_secret"] = self.__client_secret
 
-        response = requests.post(f"{ApiUrls.TWITCH_OAUTH2_URL}/token", data)
+        response = self.__requests.post(f"{Urls.TWITCH_OAUTH2_URL}/token", data)
         response.raise_for_status()
         response = response.json()
 
         self.__access_token = response["access_token"]
         self.__refresh_token = response["refresh_token"]
         self.expires_in = response["expires_in"]
-
-        logging.debug(self)
 
     def __refresh(self) -> None:
         with self.__refresh_protector.protecting(True, False) as protecting:
@@ -141,9 +146,10 @@ class TwitchAuthTokens:
             except Exception as e:
                 logging.error(f"Failed to refresh tokens: {e}")
 
-    def __initialize(self) -> None:
+    # not in constructor for testing
+    def initialize(self) -> "TwitchAuthTokens":
         try:
-            httpd = HTTPServer(("localhost", 3000), TwitchAuthHandler)
+            httpd = HTTPServer(Urls.LOCAL_WEBSERVER, TwitchAuthHandler)
 
             code: ProtectedVar = ProtectedVar()
             httpd.code = code
@@ -151,15 +157,18 @@ class TwitchAuthTokens:
 
             local_url = f"http://{httpd.server_name}:{httpd.server_port}"
             httpd.base_url = local_url
-            webbrowser.open(local_url)
+            self.__webbrowser.open(local_url)
 
             t = Thread(target=lambda: httpd.serve_forever())
             t.start()
+            self.__webserver_live.set(True)
 
             code.wait()
 
             httpd.shutdown()
+            httpd.server_close()
             t.join()
+            self.__webserver_live.set(False)
 
             self.__code = code.get()
 

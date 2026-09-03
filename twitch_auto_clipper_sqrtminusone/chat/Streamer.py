@@ -1,5 +1,5 @@
 from twitch_auto_clipper_sqrtminusone.chat.Message import Message
-from twitch_auto_clipper_sqrtminusone.ApiUrls import ApiUrls
+from twitch_auto_clipper_sqrtminusone.Urls import Urls
 from twitch_auto_clipper_sqrtminusone.TwitchAutoClipperContext import (
     TwitchAutoClipperContext,
 )
@@ -36,7 +36,7 @@ class Streamer:
     def __initialize_id(self):
         # no catch because critical
         response = self.context.tokens.authorized_get_json(
-            f"{ApiUrls.TWITCH_HELIX_URL}/users",
+            f"{Urls.TWITCH_HELIX_URL}/users",
             params={"login": self.login},
         )
         self.id = response["data"][0]["id"]
@@ -47,7 +47,7 @@ class Streamer:
         # catch because optional
         try:
             response: requests.Response = requests.get(
-                f"{ApiUrls.SEVENTV_URL}/users/{self.platform}/{self.id}"
+                f"{Urls.SEVENTV_URL}/users/{self.platform}/{self.id}"
             )
             response = response.json()
 
@@ -70,7 +70,7 @@ class Streamer:
             params["user_login"] = self.login
 
         response = self.context.tokens.authorized_get_json(
-            f"{ApiUrls.TWITCH_HELIX_URL}/streams", params
+            f"{Urls.TWITCH_HELIX_URL}/streams", params
         )
         live = len(response["data"]) > 0
         logging.info(f"{self} is {'' if live else 'not '}live")
@@ -81,8 +81,8 @@ class Streamer:
 
         try:
             clip.set_timestamp(now())
-            response = self.context.tokens.authorized_post(
-                f"{ApiUrls.TWITCH_HELIX_URL}/clips",
+            response = self.context.tokens.authorized_post_json(
+                f"{Urls.TWITCH_HELIX_URL}/clips",
                 {"broadcaster_id": clip.broadcaster_id, "duration": clip.duration},
                 ok_code=202,
             )
