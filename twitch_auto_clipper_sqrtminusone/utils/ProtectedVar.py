@@ -6,7 +6,6 @@ class ProtectedVar:
     def __init__(self, value=None):
         self.__value = value
         self.__condition = Condition()
-
         self.__waiting_count = 0
 
     def is_waiting(self):
@@ -44,8 +43,8 @@ class ProtectedVar:
                 waited = True
                 self.wait(condition=lambda var: var == b)
 
-            # cant call set because inside with
-            # cant place outside with because of race conditions
+            # cant call set because inside "with"
+            # cant place outside "with" because of race conditions
             if not waited:
                 self.__value = a
                 self.__condition.notify_all()

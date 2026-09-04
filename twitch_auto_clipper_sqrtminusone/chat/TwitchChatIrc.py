@@ -15,10 +15,9 @@ class TwitchChatIRC:
     __PATTERN = re.compile(r":[^ ]+ PRIVMSG [^ ]+ :([^\r\n]*)[\r\n]")
     __CURRENT_CHANNEL = None
 
-    def __init__(self):
+    def __init__(self, socket=socket.socket()):
         self.__NICK = self.__DEFAULT_NICK
-
-        self.__SOCKET = socket.socket()
+        self.__SOCKET = socket
 
     def connect_to_socket(self) -> None:
         self.__SOCKET.connect((self.__HOST, self.__PORT))
@@ -60,9 +59,6 @@ class TwitchChatIRC:
             self.__send_raw(f"JOIN #{channel_lower}")
             self.__CURRENT_CHANNEL = channel_lower
 
-    def is_default_user(self) -> bool:
-        return self.__NICK == self.__DEFAULT_NICK
-
     def listen(
         self,
         streamer: Streamer,
@@ -94,18 +90,17 @@ class TwitchChatIRC:
                         streamer.on_message(msg)
 
                 except socket.timeout:
-                    if timeout is not None:
-                        time_since_last_message += message_timeout
+                    time_since_last_message += message_timeout
 
-                        if time_since_last_message >= timeout:
-                            logging.debug(
-                                f"No data received in {timeout} seconds. Checking if live."
-                            )
-                            if not streamer.is_live():
-                                break
+                    if time_since_last_message >= timeout:
+                        logging.debug(
+                            f"No data received in {timeout} seconds. Checking if live."
+                        )
+
+                        if not streamer.is_live():
+                            break
 
         except KeyboardInterrupt:
             logging.debug("Interrupted by user.")
         except Exception as e:
             logging.error("Unknown Error:", e)
-            raise e
