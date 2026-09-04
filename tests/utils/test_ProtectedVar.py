@@ -1,7 +1,7 @@
 from twitch_auto_clipper_sqrtminusone.utils.ProtectedVar import ProtectedVar
 
 import unittest
-from threading import Lock, Thread
+from threading import Thread
 from helpers import (
     create_threads,
     id,
@@ -10,33 +10,7 @@ from helpers import (
     start_all,
     for_testing_protected,
 )
-
-
-class LockedCounter:
-    def __init__(self):
-        self.__num = 0
-        self.__lock = Lock()
-
-    @property
-    def num(self):
-        with self.__lock:
-            return self.__num
-
-    @num.setter
-    def num(self, value: int):
-        assert isinstance(value, int)
-        with self.__lock:
-            self.__num = value
-
-    def __iadd__(self, other: int):
-        with self.__lock:
-            self.__num += other
-            return self.__num
-
-    def __lt__(self, other: int):
-        assert isinstance(other, int)
-        with self.__lock:
-            return self.__num < other
+from utils.LockedCounter import LockedCounter
 
 
 class TestProtectedVar(unittest.TestCase):
@@ -50,7 +24,7 @@ class TestProtectedVar(unittest.TestCase):
 
         self.assertTrue(var.is_waiting())
 
-        var.set(True)
+        var.value = True
 
         t.join()
         self.assertFalse(var.is_waiting())
@@ -68,7 +42,7 @@ class TestProtectedVar(unittest.TestCase):
         wait_threads = create_threads(waiter)
         start_all(wait_threads)
 
-        var.set(True)
+        var.value = True
 
         num_of_threads = len(wait_threads)
         sleep_conditionally(done_waiting_count < num_of_threads)
@@ -84,12 +58,12 @@ class TestProtectedVar(unittest.TestCase):
                 var.wait(cond)
             else:
                 var.wait()
-            self.assertEqual(var.get(), to_set)
+            self.assertEqual(var.value, to_set)
 
         t = Thread(target=waiter)
         t.start()
 
-        var.set(to_set)
+        var.value = to_set
 
         t.join()
 

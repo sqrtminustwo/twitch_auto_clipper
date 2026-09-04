@@ -34,7 +34,7 @@ class TwitchAuthHandler(BaseHTTPRequestHandler):
             self.wfile.write(
                 "Authentication is done, you can close this tab.".encode("utf-8")
             )
-            code.set(match.group(1))
+            code.value = match.group(1)
             return
 
 
@@ -161,16 +161,16 @@ class TwitchAuthTokens:
 
             t = Thread(target=lambda: httpd.serve_forever())
             t.start()
-            self.__webserver_live.set(True)
+            self.__webserver_live.value = True
 
             code.wait()
 
             httpd.shutdown()
             httpd.server_close()
             t.join()
-            self.__webserver_live.set(False)
+            self.__webserver_live.value = False
 
-            self.__code = code.get()
+            self.__code = code.value
 
             self.__request_tokens_and_set(
                 {
