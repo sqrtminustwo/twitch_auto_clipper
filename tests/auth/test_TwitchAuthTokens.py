@@ -3,7 +3,7 @@ from twitch_auto_clipper_sqrtminusone.auth.TwitchAuthTokens import TwitchAuthTok
 from twitch_auto_clipper_sqrtminusone.utils.ProtectedVar import ProtectedVar
 from twitch_auto_clipper_sqrtminusone.Urls import Urls
 
-from helpers import id
+from helpers import create_threads, for_testing_protected, id, join_all
 import unittest
 from unittest.mock import Mock, ANY, patch
 from threading import Thread
@@ -103,28 +103,14 @@ class TestTwitchAuthTokens(unittest.TestCase):
         tokens = self.make_class()
 
         done = ProtectedVar(False)
-        waiting = ProtectedVar(False)
+        request_tokens_and_set_mock.side_effect = lambda _: done.wait(id)
 
-        def mock_wait(_):
-            waiting.set(True)
-            done.wait(id)
-
-        request_tokens_and_set_mock.side_effect = mock_wait
-
-        refresh_threads = [
-            Thread(target=lambda: tokens._TwitchAuthTokens__refresh()) for _ in range(3)
-        ]
-        refresh_threads[0].start()
-
-        waiting.wait(id)
-
-        for i in range(1, len(refresh_threads)):
-            refresh_threads[i].start()
-
+        refresh_threads = for_testing_protected(
+            lambda: tokens._TwitchAuthTokens__refresh(), done
+        )
         done.set(True)
 
-        for thread in refresh_threads:
-            thread.join()
+        join_all(refresh_threads)
         request_tokens_and_set_mock.assert_called_once()
 
     def test_initialize(self):
