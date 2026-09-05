@@ -18,11 +18,9 @@ class Streamer:
         self,
         login,
         context: TwitchAutoClipperContext,
-        platform: str = "twitch",
+        platform="twitch",
         requests=requests,
     ):
-        assert isinstance(platform, str)
-
         self.login = login
         self.context = context
         self.platform = platform
@@ -54,6 +52,7 @@ class Streamer:
     def __initialize_seventv_emotes(self):
         # catch because optional
         try:
+            print(self.__requests)
             response: requests.Response = self.__requests.get(
                 f"{Urls.SEVENTV_URL}/users/{self.platform}/{self.id}"
             )
@@ -105,11 +104,6 @@ class Streamer:
             return self.context.emote_value
         return self.context.common_value
 
-    @property
-    def most_used(self):
-        if self.words_dict:
-            return self.words_dict.peekitem(index=-1)
-
     def on_message(self, msg: str) -> None:
         # set to avoid spam messages
         words = set(msg.lower().split(" "))
@@ -128,15 +122,16 @@ class Streamer:
                 self.words_dict[word] = value
 
         if self.words_dict:
-            logging.debug(f"{self}: {self.most_used}")
+            logging.debug(f"{self}: {self.words_dict.peekitem(index=-1)}")
 
         self.message_count += 1
         now_ = now()
 
-        message, count = self.most_used
+        most_used = self.words_dict.peekitem(index=-1)
+        message, count = most_used
         # ration can be larger than 1, emojies have higher count than 1
         ratio_to_all = count / self.message_count
-        clipable = ratio_to_all >= self.context.clipable_message_ratio
+        clipable = ratio_to_all > self.context.clipable_message_ratio
 
         if clipable and message.became_popular is None:
             message.became_popular = now_
@@ -146,7 +141,7 @@ class Streamer:
         ).total_seconds() > self.context.counter_interval_seconds:
             if self.words_dict:
                 logging.info("====================================")
-                logging.info(f"SNAPSHOT for {self} at {now_}: {self.most_used}")
+                logging.info(f"SNAPSHOT for {self} at {now_}: {most_used}")
                 logging.info(f"{ratio_to_all = }, {count = }, {self.message_count = }")
                 logging.info(f"{clipable = }")
                 logging.info("====================================\n")

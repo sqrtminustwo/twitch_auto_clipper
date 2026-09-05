@@ -1,5 +1,4 @@
 from twitch_auto_clipper_sqrtminusone.chat.TwitchChatIrc import TwitchChatIRC
-from twitch_auto_clipper_sqrtminusone.chat.Streamer import Streamer
 
 import unittest
 from unittest.mock import call, Mock
@@ -92,7 +91,7 @@ class TestTwitchChatIrc(unittest.TestCase):
         return msg.encode("utf-8"), content
 
     def common_listen(
-        self, sender: Callable[[int], bytes], asserts: Callable[[Streamer], None]
+        self, sender: Callable[[int], bytes], asserts: Callable[[Mock], None]
     ):
         chat_irc = self.make_class()
         self.get_socket(chat_irc).recv = sender
@@ -120,7 +119,7 @@ class TestTwitchChatIrc(unittest.TestCase):
                 return msg
             raise s.timeout
 
-        def asserts(streamer: Streamer):
+        def asserts(streamer: Mock):
             streamer.on_message.assert_called_once_with(content)
 
         self.common_listen(sender, asserts)
@@ -150,7 +149,7 @@ class TestTwitchChatIrc(unittest.TestCase):
 
             raise s.timeout
 
-        def asserts(streamer: Streamer):
+        def asserts(streamer: Mock):
             nonlocal contents
             contents = map(lambda c: call(c), contents)
             streamer.on_message.assert_has_calls(contents)
