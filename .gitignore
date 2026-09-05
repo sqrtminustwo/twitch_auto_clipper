@@ -3,3 +3,4 @@ links.txt
 myvenv
 **/__pycache__
 log
+dist/
