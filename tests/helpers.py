@@ -1,6 +1,7 @@
 from collections.abc import Callable
 from threading import Thread
 from time import sleep
+import datetime
 
 
 def id(v):
@@ -38,3 +39,7 @@ def for_testing_protected(func: Callable[[None], None], done) -> list[Thread]:
         refresh_threads[i].start()
 
     return refresh_threads
+
+
+def now_minus_delta(delta):
+    return datetime.datetime.now() - datetime.timedelta(seconds=delta)

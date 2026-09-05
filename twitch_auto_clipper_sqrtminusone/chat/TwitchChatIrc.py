@@ -1,8 +1,8 @@
 # https://github.com/scmanjarrez/twitch-chat-irc/blob/master/twitch_chat_irc/twitch_chat_irc.py
 
 from twitch_auto_clipper_sqrtminusone.chat.Streamer import Streamer
-from twitch_auto_clipper_sqrtminusone.utils.utils import now
 
+from datetime import datetime
 import socket
 import re
 import logging
@@ -71,7 +71,7 @@ class TwitchChatIRC:
 
         logging.info("Started retrieving messages:")
 
-        streamer.start_of_snapshot = now()
+        streamer.start_of_snapshot = datetime.now()
         time_since_last_message = 0
         try:
             while True:

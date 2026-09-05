@@ -4,8 +4,8 @@ from twitch_auto_clipper_sqrtminusone.TwitchAutoClipperContext import (
     TwitchAutoClipperContext,
 )
 from twitch_auto_clipper_sqrtminusone.clip.Clip import Clip
-from twitch_auto_clipper_sqrtminusone.utils.utils import now
 
+from datetime import datetime
 import time
 import requests
 import logging
@@ -88,7 +88,7 @@ class Streamer:
         time.sleep(self.context.clipable_wait)
 
         try:
-            clip.set_timestamp(now())
+            clip.set_timestamp(datetime.now())
             response = self.context.tokens.authorized_post_json(
                 f"{Urls.TWITCH_HELIX_URL}/clips",
                 {"broadcaster_id": clip.broadcaster_id, "duration": clip.duration},
@@ -131,7 +131,7 @@ class Streamer:
             logging.debug(f"{self}: {self.most_used}")
 
         self.message_count += 1
-        now_ = now()
+        now_ = datetime.now()
 
         message, count = self.most_used
         # ration can be larger than 1, emojies have higher count than 1

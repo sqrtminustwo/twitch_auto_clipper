@@ -1,10 +1,10 @@
+from tests.helpers import now_minus_delta
 from twitch_auto_clipper_sqrtminusone.chat.Streamer import Streamer
 from twitch_auto_clipper_sqrtminusone.clip.Clip import Clip
-from twitch_auto_clipper_sqrtminusone.utils.utils import now
 
 import unittest
 from unittest.mock import Mock, ANY
-import datetime
+from datetime import datetime
 
 
 class TestStreamer(unittest.TestCase):
@@ -102,7 +102,7 @@ class TestStreamer(unittest.TestCase):
 
     def test_most_used(self):
         streamer = self.make_for_on_message()
-        streamer.start_of_snapshot = now()
+        streamer.start_of_snapshot = datetime.now()
         streamer.context.counter_interval_seconds = 1000
 
         streamer.on_message("lol lol lol")
@@ -121,7 +121,7 @@ class TestStreamer(unittest.TestCase):
 
     def test_on_message_doesnt_clip_interval(self):
         streamer = self.make_for_on_message()
-        streamer.start_of_snapshot = now()
+        streamer.start_of_snapshot = datetime.now()
         streamer.context.counter_interval_seconds = 10
         streamer.clip = Mock()
 
@@ -139,10 +139,10 @@ class TestStreamer(unittest.TestCase):
         return streamer
 
     def set_not_in_inverval(self, streamer):
-        streamer.start_of_snapshot = now()
+        streamer.start_of_snapshot = datetime.now()
 
     def set_in_inverval(self, streamer):
-        streamer.start_of_snapshot = now() - datetime.timedelta(seconds=12)
+        streamer.start_of_snapshot = now_minus_delta(12)
 
     def test_on_message_doesnt_clip_not_popular(self):
         streamer = self.make_with_interval()
