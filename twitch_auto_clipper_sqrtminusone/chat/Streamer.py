@@ -5,6 +5,7 @@ from twitch_auto_clipper_sqrtminusone.TwitchAutoClipperContext import (
     TwitchAutoClipperContext,
 )
 from twitch_auto_clipper_sqrtminusone.clip.Clip import Clip
+from twitch_auto_clipper_sqrtminusone.utils.utils import log_delimiter
 
 from datetime import datetime
 import time
@@ -75,7 +76,7 @@ class Streamer:
             pass
 
     def __repr__(self):
-        return f"{self.__class__.__name__}({self.login})"
+        return self.login
 
     def is_live(self):
         params = {}
@@ -145,7 +146,7 @@ class Streamer:
                 self.words_dict[word] = value
 
         if self.words_dict:
-            logging.debug(f"{self}: {self.most_used}")
+            logging.debug(self.most_used)
 
         self.message_count += 1
         now_ = datetime.now()
@@ -162,11 +163,11 @@ class Streamer:
             now_ - self.start_of_snapshot
         ).total_seconds() > self.context.counter_interval_seconds:
             if self.words_dict:
-                logging.info("====================================")
+                log_delimiter()
                 logging.info(f"SNAPSHOT for {self} at {now_}: {self.most_used}")
                 logging.info(f"{ratio_to_all = }, {count = }, {self.message_count = }")
                 logging.info(f"{clipable = }")
-                logging.info("====================================\n")
+                log_delimiter(above=False)
 
                 if clipable:
                     self.__join_clipping_thread()

@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling >= 1.32"]
+requires = ["hatchling >= 1.27"]
 build-backend = "hatchling.build"
 
 [project]
@@ -25,3 +25,9 @@ license-files = ["LICEN[CS]E*"]
 
 [project.urls]
 source = "https://github.com/sqrtminustwo/twitch_auto_clipper"
+
+
+[project.optional-dependencies]
+test = [
+    "coverage>=7.16.0",
+]

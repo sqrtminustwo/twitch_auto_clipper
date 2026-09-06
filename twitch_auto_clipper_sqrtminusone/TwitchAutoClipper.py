@@ -9,6 +9,8 @@ from twitch_auto_clipper_sqrtminusone.TwitchAutoClipperContext import (
 import logging
 from threading import Thread
 
+from twitch_auto_clipper_sqrtminusone.utils.utils import log_delimiter
+
 
 class TwitchAutoClipper:
     def __init__(
@@ -31,7 +33,12 @@ class TwitchAutoClipper:
         assert client_secret, (
             f"{client_secret = }, which is invalid, won't be able to clip!"
         )
-        logging.basicConfig(level=logging_level, handlers=logging_handlers)
+
+        logging.basicConfig(
+            level=logging_level,
+            handlers=logging_handlers,
+            format="%(levelname)s:%(threadName)s: %(message)s",
+        )
 
         self.__context = TwitchAutoClipperContext(
             tokens=TwitchAuthTokens(client_id, client_secret).initialize(),
@@ -56,7 +63,7 @@ class TwitchAutoClipper:
                 connection.listen(streamer)
 
         self.__threads = [
-            Thread(target=streamer_thread, args=(streamer,))
+            Thread(target=streamer_thread, name=streamer, args=(streamer,))
             for streamer in self.__streamers
             if streamer.is_live()
         ]
@@ -69,6 +76,7 @@ class TwitchAutoClipper:
             for thread in self.__threads:
                 thread.join()
         except KeyboardInterrupt:
+            log_delimiter()
             logging.info("Interrupted, finishing all clips.")
             for streamer in self.__streamers:
                 streamer.stop_listening.value = True

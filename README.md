@@ -88,6 +88,7 @@ Call on_clip callback
 - [x] Save clips to a log
 - [ ] Add automated tests
 - [ ] Make pip package with callback that takes Clip and constants as parameters to listener
+- [ ] Web page for constants editing
 
 ## Why?
 

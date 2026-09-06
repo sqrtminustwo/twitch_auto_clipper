@@ -43,8 +43,7 @@ class TwitchChatIRC:
 
     def __send_raw(self, string: str) -> None:
         msg = string + "\r\n"
-        sent_on_join = self.__SOCKET.send(msg.encode())
-        logging.debug(f"{sent_on_join = }, {len(msg) = }")
+        self.__SOCKET.send(msg.encode())
 
     def __recvall(self, buffer_size: int) -> str:
         data = b""
