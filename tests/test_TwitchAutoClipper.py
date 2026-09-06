@@ -35,6 +35,7 @@ class TestTwitchAutoClipper(unittest.TestCase):
         patch.stopall()
 
     def test_init(self):
+        self.assertTrue(False)
         self.mock_tokens.assert_called_once_with(self.client_id, self.client_secret)
         self.tokens.initialize.assert_called_once()
         self.mock_streamer.assert_has_calls([call(name, ANY) for name in self.names])
