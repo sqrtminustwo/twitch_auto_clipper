@@ -1,1 +1,1 @@
-python -m unittest discover tests/
+coverage run -m unittest discover tests/

@@ -30,4 +30,5 @@ source = "https://github.com/sqrtminustwo/twitch_auto_clipper"
 [project.optional-dependencies]
 test = [
     "coverage>=7.16.0",
+    "coveralls>=4.1.0"
 ]
