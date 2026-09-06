@@ -2,7 +2,12 @@ name: Run unittests
 on: [push]
 jobs:
   test:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./scripts
     steps:
-      - name: Run script that runs tests
-        run: ./scripts/run_tests.sh
+      - name: Check out the repository to the runner
+        uses: actions/checkout@v6
+      - name: Run tests script
+        run: ./run_tests.sh
