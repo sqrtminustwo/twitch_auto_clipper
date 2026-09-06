@@ -8,7 +8,7 @@ from datetime import datetime
 class Clip:
     MAX_CLIP_LENGTH = 60
     message: Message  # will be cast to str, trust
-    emote_count: float
+    message_count: float
     ratio: float
     broadcaster_id: int = field(repr=False)
     url: str = field(default=None)

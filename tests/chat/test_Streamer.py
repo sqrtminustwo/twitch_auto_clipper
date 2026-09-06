@@ -168,7 +168,7 @@ class TestStreamer(unittest.TestCase):
         if streamer.clipping_thread is not None:
             streamer.clipping_thread.join()
         streamer.clip.assert_called_once_with(
-            Clip(broadcaster_id=self.id, message="b", emote_count=1, ratio=0.5)
+            Clip(broadcaster_id=self.id, message="b", message_count=1, ratio=0.5)
         )
 
 

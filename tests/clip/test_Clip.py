@@ -8,7 +8,7 @@ import unittest
 
 class TestClip(unittest.TestCase):
     def make_class(self, message=None, ratio=0):
-        return Clip(message=message, broadcaster_id="123", emote_count=0, ratio=ratio)
+        return Clip(message=message, broadcaster_id="123", message_count=0, ratio=ratio)
 
     def test_set_timestamp_bound(self):
         message = Message("msg")

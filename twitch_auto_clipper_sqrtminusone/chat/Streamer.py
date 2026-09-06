@@ -175,7 +175,7 @@ class Streamer:
                     clip: Clip = Clip(
                         broadcaster_id=self.id,
                         message=message,
-                        emote_count=count,
+                        message_count=count,
                         ratio=ratio_to_all,
                     )
                     self.clipping_thread = Thread(target=self.clip, args=(clip,))
