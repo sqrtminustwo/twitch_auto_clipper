@@ -1,4 +1,4 @@
-from twitch_auto_clipper_sqrtminusone.utils.ProtectedVar import ProtectedVar
+from twitch_auto_clipper.utils.ProtectedVar import ProtectedVar
 
 import unittest
 from threading import Thread

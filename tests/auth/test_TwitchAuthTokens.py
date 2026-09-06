@@ -1,7 +1,7 @@
 import requests
-from twitch_auto_clipper_sqrtminusone.auth.TwitchAuthTokens import TwitchAuthTokens
-from twitch_auto_clipper_sqrtminusone.utils.ProtectedVar import ProtectedVar
-from twitch_auto_clipper_sqrtminusone.Urls import Urls
+from twitch_auto_clipper.auth.TwitchAuthTokens import TwitchAuthTokens
+from twitch_auto_clipper.utils.ProtectedVar import ProtectedVar
+from twitch_auto_clipper.Urls import Urls
 
 from helpers import for_testing_protected, id, join_all
 import unittest

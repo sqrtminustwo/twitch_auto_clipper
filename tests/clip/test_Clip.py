@@ -1,5 +1,5 @@
-from twitch_auto_clipper_sqrtminusone.clip.Clip import Clip
-from twitch_auto_clipper_sqrtminusone.chat.Message import Message
+from twitch_auto_clipper.clip.Clip import Clip
+from twitch_auto_clipper.chat.Message import Message
 
 from tests.helpers import now_minus_delta
 from datetime import datetime

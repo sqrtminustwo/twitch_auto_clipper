@@ -1,4 +1,4 @@
-from twitch_auto_clipper_sqrtminusone.chat.TwitchChatIRC import TwitchChatIRC
+from twitch_auto_clipper.chat.TwitchChatIRC import TwitchChatIRC
 
 import unittest
 from unittest.mock import call, Mock

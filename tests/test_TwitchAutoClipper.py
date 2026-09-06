@@ -1,4 +1,4 @@
-from twitch_auto_clipper_sqrtminusone.TwitchAutoClipper import TwitchAutoClipper
+from twitch_auto_clipper.TwitchAutoClipper import TwitchAutoClipper
 
 import unittest
 from unittest.mock import Mock, patch, ANY, call
@@ -11,10 +11,10 @@ class TestTwitchAutoClipper(unittest.TestCase):
 
     def setUp(self):
         self.mock_streamer = patch(
-            "twitch_auto_clipper_sqrtminusone.TwitchAutoClipper.Streamer"
+            "twitch_auto_clipper.TwitchAutoClipper.Streamer"
         ).start()
         self.mock_tokens = patch(
-            "twitch_auto_clipper_sqrtminusone.TwitchAutoClipper.TwitchAuthTokens"
+            "twitch_auto_clipper.TwitchAutoClipper.TwitchAuthTokens"
         ).start()
 
         self.tokens = Mock()
@@ -41,7 +41,7 @@ class TestTwitchAutoClipper(unittest.TestCase):
 
     def make_start(self):
         twitch_char_irc_mock = patch(
-            "twitch_auto_clipper_sqrtminusone.TwitchAutoClipper.TwitchChatIRC"
+            "twitch_auto_clipper.TwitchAutoClipper.TwitchChatIRC"
         ).start()
 
         self.chat_mocks = []

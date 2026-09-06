@@ -1,6 +1,6 @@
 from tests.helpers import now_minus_delta
-from twitch_auto_clipper_sqrtminusone.chat.Streamer import Streamer
-from twitch_auto_clipper_sqrtminusone.clip.Clip import Clip
+from twitch_auto_clipper.chat.Streamer import Streamer
+from twitch_auto_clipper.clip.Clip import Clip
 
 import unittest
 from unittest.mock import Mock, ANY
