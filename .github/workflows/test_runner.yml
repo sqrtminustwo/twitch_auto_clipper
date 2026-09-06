@@ -3,11 +3,8 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./scripts
     steps:
       - name: Check out the repository to the runner
         uses: actions/checkout@v6
       - name: Run tests script
-        run: ./run_tests.sh
+        run: ./scripts/run_tests.sh
