@@ -20,30 +20,6 @@ Minimum Python version supported by `twitch_auto_clipper` is 3.10.
 
 ## Quick start
 
-````python
-
-[![Unit Tests](https://github.com/sqrtminustwo/twitch_auto_clipper/actions/workflows/test_runner.yml/badge.svg?branch=main)](https://github.com/sqrtminustwo/twitch_auto_clipper/actions/workflows/test_runner.yml)
-
-# twitch_auto_clipper
-
-Automatically create Twitch clips when chat activity spikes.
-
-Twitch Auto Clipper monitors Twitch chat and detects moments where a large number of viewers send the same emote/message within a short period of time. When activity exceeds a configurable threshold, it automatically creates a Twitch clip.
-
-[demo]
-
-## Installation
-
-```bash
-pip install twitch_auto_clipper
-````
-
-## Requirements
-
-Minimum Python version supported by `twitch_auto_clipper` is 3.10.
-
-## Quick start
-
 ```python
 from twitch_auto_clipper_sqrtminusone.TwitchAutoClipper import TwitchAutoClipper
 
