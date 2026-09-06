@@ -14,7 +14,7 @@ pip install twitch_auto_clipper
 
 ## Requirements
 
-Minimum Python version supported by `twitch_auto_clipper` is 3.8.
+Minimum Python version supported by `twitch_auto_clipper` is 3.10.
 
 ## Quick start
 
