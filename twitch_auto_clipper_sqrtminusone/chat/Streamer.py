@@ -1,3 +1,4 @@
+from twitch_auto_clipper_sqrtminusone.utils.ProtectedVar import ProtectedVar
 from twitch_auto_clipper_sqrtminusone.chat.Message import Message
 from twitch_auto_clipper_sqrtminusone.Urls import Urls
 from twitch_auto_clipper_sqrtminusone.TwitchAutoClipperContext import (
@@ -11,6 +12,10 @@ import requests
 import logging
 from sortedcollections.recipes import ValueSortedDict
 from threading import Thread
+
+
+class StopListeningException(Exception):
+    pass
 
 
 class Streamer:
@@ -35,6 +40,8 @@ class Streamer:
         self.message_count: int = 0
         self.clipping_thread: Thread = None
         self.start_of_snapshot = None
+
+        self.stop_listening = ProtectedVar(False)
 
         self.__initialize_id()
         self.__initialize_seventv_emotes()
@@ -110,7 +117,17 @@ class Streamer:
         if self.words_dict:
             return self.words_dict.peekitem(index=-1)
 
+    def __join_clipping_thread(self):
+        if self.clipping_thread and self.clipping_thread.is_alive():
+            logging.info(f"Finishing clipping in {self}...")
+            self.clipping_thread.join()
+            logging.info(f"Done clipping in {self}.")
+
     def on_message(self, msg: str) -> None:
+        if self.stop_listening.value:
+            self.__join_clipping_thread()
+            raise StopListeningException()
+
         # set to avoid spam messages
         words = set(msg.lower().split(" "))
 
@@ -152,8 +169,7 @@ class Streamer:
                 logging.info("====================================\n")
 
                 if clipable:
-                    if self.clipping_thread and self.clipping_thread.is_alive():
-                        self.clipping_thread.join()
+                    self.__join_clipping_thread()
 
                     clip: Clip = Clip(
                         broadcaster_id=self.id,

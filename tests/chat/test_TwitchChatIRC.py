@@ -1,4 +1,4 @@
-from twitch_auto_clipper_sqrtminusone.chat.TwitchChatIrc import TwitchChatIRC
+from twitch_auto_clipper_sqrtminusone.chat.TwitchChatIRC import TwitchChatIRC
 
 import unittest
 from unittest.mock import call, Mock
@@ -7,7 +7,7 @@ import signal
 from collections.abc import Callable
 
 
-class TestTwitchChatIrc(unittest.TestCase):
+class TestTwitchChatIRC(unittest.TestCase):
     def setUp(self) -> None:
         self.original_sigint_handler = signal.getsignal(signal.SIGALRM)
 

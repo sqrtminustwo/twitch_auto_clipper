@@ -1,5 +1,5 @@
 from twitch_auto_clipper_sqrtminusone.chat.Streamer import Streamer
-from twitch_auto_clipper_sqrtminusone.chat.TwitchChatIrc import TwitchChatIRC
+from twitch_auto_clipper_sqrtminusone.chat.TwitchChatIRC import TwitchChatIRC
 from twitch_auto_clipper_sqrtminusone.auth.TwitchAuthTokens import TwitchAuthTokens
 from twitch_auto_clipper_sqrtminusone.type_aliases.types import OnClipCallBack
 from twitch_auto_clipper_sqrtminusone.TwitchAutoClipperContext import (
@@ -60,9 +60,15 @@ class TwitchAutoClipper:
             for streamer in self.__streamers
             if streamer.is_live()
         ]
+
         for thread in self.__threads:
             thread.start()
 
     def join(self):
-        for thread in self.__threads:
-            thread.join()
+        try:
+            for thread in self.__threads:
+                thread.join()
+        except KeyboardInterrupt:
+            logging.info("Interrupted, finishing all clips.")
+            for streamer in self.__streamers:
+                streamer.stop_listening.value = True

@@ -1,6 +1,9 @@
 # https://github.com/scmanjarrez/twitch-chat-irc/blob/master/twitch_chat_irc/twitch_chat_irc.py
 
-from twitch_auto_clipper_sqrtminusone.chat.Streamer import Streamer
+from twitch_auto_clipper_sqrtminusone.chat.Streamer import (
+    StopListeningException,
+    Streamer,
+)
 
 from datetime import datetime
 import socket
@@ -15,9 +18,9 @@ class TwitchChatIRC:
     __PATTERN = re.compile(r":[^ ]+ PRIVMSG [^ ]+ :([^\r\n]*)[\r\n]")
     __CURRENT_CHANNEL = None
 
-    def __init__(self, socket=socket.socket()):
+    def __init__(self, socket_inj=None):
         self.__NICK = self.__DEFAULT_NICK
-        self.__SOCKET = socket
+        self.__SOCKET = socket.socket() if socket_inj is None else socket_inj
 
     def connect_to_socket(self) -> None:
         self.__SOCKET.connect((self.__HOST, self.__PORT))
@@ -49,6 +52,7 @@ class TwitchChatIRC:
             part = self.__SOCKET.recv(buffer_size)
             data += part
             if len(part) < buffer_size:
+                # shorter than requested buffer -> end of message
                 break
         return data.decode()
 
@@ -99,8 +103,7 @@ class TwitchChatIRC:
 
                         if not streamer.is_live():
                             break
-
-        except KeyboardInterrupt:
-            logging.debug("Interrupted by user.")
+        except StopListeningException:
+            return
         except Exception as e:
-            logging.error("Unknown Error:", e)
+            logging.error(f"Unknown Error: {e}")
