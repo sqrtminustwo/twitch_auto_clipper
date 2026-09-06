@@ -1,10 +1,16 @@
-name: Run unittests
-on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repository to the runner
-        uses: actions/checkout@v6
-      - name: Run tests script
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies and package
+        run: pip install .
+
+      - name: Run tests
         run: ./scripts/run_tests.sh
