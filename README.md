@@ -21,7 +21,7 @@ Minimum Python version supported by `twitch_auto_clipper` is 3.10.
 ## Quick start
 
 ```python
-from twitch_auto_clipper_sqrtminusone.TwitchAutoClipper import TwitchAutoClipper
+from twitch_auto_clipper.TwitchAutoClipper import TwitchAutoClipper
 
 clipper = TwitchAutoClipper(
     ["Marlon", "Lacy"],
@@ -38,10 +38,10 @@ clipper.join()
 ```
 
 > [!IMPORTANT]
-> `client_id` and `client_secret` are saved in [TwitchAuthTokens](twitch_auto_clipper_sqrtminusone/auth/TwitchAuthTokens.py) and only sent to the Twitch API.
+> `client_id` and `client_secret` are saved in [TwitchAuthTokens](twitch_auto_clipper/auth/TwitchAuthTokens.py) and only sent to the Twitch API.
 
 > [!IMPORTANT]
-> Upon initialization of [TwitchAutoClipper](twitch_auto_clipper_sqrtminusone/TwitchAutoClipper.py), your web browser should open to gain clipping permission for your Twitch account (as shown in the demo).
+> Upon initialization of [TwitchAutoClipper](twitch_auto_clipper/TwitchAutoClipper.py), your web browser should open to gain clipping permission for your Twitch account (as shown in the demo).
 
 ## Features
 
@@ -148,5 +148,5 @@ Manually watching an entire stream to find moments worth clipping is time-consum
 - [x] Monitor multiple live streamers
 - [x] Save clips to a log
 - [x] Add automated tests
-- [ ] Pip package
+- [x] Pip package
 - [ ] Web page for constants editing

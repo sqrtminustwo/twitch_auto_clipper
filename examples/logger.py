@@ -1,6 +1,6 @@
-from twitch_auto_clipper_sqrtminusone.TwitchAutoClipper import TwitchAutoClipper
-from twitch_auto_clipper_sqrtminusone.utils.utils import now_formated
-from twitch_auto_clipper_sqrtminusone.clip.Clip import Clip
+from twitch_auto_clipper.TwitchAutoClipper import TwitchAutoClipper
+from twitch_auto_clipper.utils.utils import now_formated
+from twitch_auto_clipper.clip.Clip import Clip
 
 import csv
 from dataclasses import asdict, fields, is_dataclass
@@ -54,7 +54,7 @@ clipper = TwitchAutoClipper(
     on_clip=on_clip,
     common_value=1,
     emote_value=2,
-    clipable_message_ratio=0.2,
+    clipable_message_ratio=0.5,
 )
 
 clipper.start()

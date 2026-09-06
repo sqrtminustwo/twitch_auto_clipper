@@ -1,4 +1,4 @@
-from twitch_auto_clipper_sqrtminusone.TwitchAutoClipper import TwitchAutoClipper
+from twitch_auto_clipper.TwitchAutoClipper import TwitchAutoClipper
 
 from dotenv import load_dotenv
 from os import getenv
@@ -12,7 +12,7 @@ clipper = TwitchAutoClipper(
     on_clip=lambda clip: print(clip),
     common_value=1,
     emote_value=2,
-    clipable_message_ratio=0.2,
+    clipable_message_ratio=0.5,
 )
 
 clipper.start()
