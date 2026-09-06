@@ -1,4 +1,4 @@
-from twitch_auto_clipper_sqrtminusone.utils.utils import now_formated
+from twitch_auto_clipper.utils.utils import now_formated
 
 import datetime
 import unittest

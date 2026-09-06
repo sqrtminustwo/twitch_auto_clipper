@@ -81,7 +81,13 @@ class TestTwitchAutoClipper(unittest.TestCase):
     def test_join(self):
         thread = self.make_join()
 
+        i = 0
+
         def raise_join():
+            nonlocal i
+            if i > 0:
+                return
+            i += 1
             raise KeyboardInterrupt()
 
         thread.join = raise_join
