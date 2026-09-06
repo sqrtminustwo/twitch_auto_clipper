@@ -1,0 +1,8 @@
+name: Run unittests
+on: [push]
+jobs:
+  test:
+    runs-on: self-hosted
+    steps:
+      - name: Run script that runs tests
+        run: ./scripts/run_tests.sh
