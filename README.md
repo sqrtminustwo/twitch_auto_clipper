@@ -21,7 +21,6 @@ Minimum Python version supported by `twitch_auto_clipper` is 3.10.
 ## Quick start
 
 ```python
-
 from twitch_auto_clipper_sqrtminusone.TwitchAutoClipper import TwitchAutoClipper
 
 clipper = TwitchAutoClipper(
@@ -39,10 +38,10 @@ clipper.join()
 ```
 
 > [!IMPORTANT]
-> `client_id` and `client_secret` are saved in [TwitchAuthTokens](https://github.com/sqrtminustwo/twitch_auto_clipper/blob/40571716c73c95119f9743ba190808602a953f68/twitch_auto_clipper/auth/TwitchAuthTokens.py) and only sent to the Twitch API. Of course, you are encouraged to skim through the code to make sure your credentials are not sent where you do not want them to be sent.
+> `client_id` and `client_secret` are saved in [TwitchAuthTokens](twitch_auto_clipper_sqrtminusone/auth/TwitchAuthTokens.py) and only sent to the Twitch API.
 
 > [!IMPORTANT]
-> Upon initialization of [TwitchAutoClipper](https://github.com/sqrtminustwo/twitch_auto_clipper/blob/40571716c73c95119f9743ba190808602a953f68/twitch_auto_clipper/TwitchAutoClipper.py), your web browser should open to gain clipping permission for your Twitch account (as shown in the demo). The code responsible for this is also in [TwitchAuthTokens](https://github.com/sqrtminustwo/twitch_auto_clipper/blob/40571716c73c95119f9743ba190808602a953f68/twitch_auto_clipper/auth/TwitchAuthTokens.py). Note that it is not necessary to keep this tab open after initialization is complete for the script to work properly.
+> Upon initialization of [TwitchAutoClipper](twitch_auto_clipper_sqrtminusone/TwitchAutoClipper.py), your web browser should open to gain clipping permission for your Twitch account (as shown in the demo).
 
 ## Features
 
@@ -77,12 +76,6 @@ Create Twitch clip
 Call on_clip callback
 ```
 
-## Motivation
-
-Manually watching an entire stream to find moments worth clipping is time-consuming.
-
-`twitch_auto_clipper` uses the audience's reaction as a signal: when chat suddenly becomes active around a particular message or emote, the bot can automatically capture the moment.
-
 ## Usage
 
 There are two classes that you will typically need:
@@ -116,10 +109,10 @@ TwitchAutoClipper(
 | `client_secret`            | Your Twitch application client secret. Available from the [Twitch Developer Console](https://dev.twitch.tv/docs/authentication/register-app).                                           |
 | `on_clip`                  | Callback function invoked with a `Clip` instance when a clip is created.                                                                                                                |
 | `counter_interval_seconds` | Time interval over which chat message frequencies are counted. Once the interval ends, the counters are reset.                                                                          |
-| `clipable_message_ratio`   | Ratio of the most frequent message to the total number of messages received during the current interval. This value can be greater than `1` depending on the configured message values. |
-| `clipable_wait`            | Time to wait before creating a clip after a message reaches the clipping threshold.                                                                                                     |
+| `clipable_message_ratio`   | The weighted frequency of the most frequent message divided by the total number of messages received during the current interval. Because messages can have different values (`common_value` and `emote_value`), the ratio can exceed 1. |
+| `clipable_wait`            | Time to wait before creating a clip after a message reaches the clipping threshold. The waiting and clipping are performed in a separate thread, so this does not block the streamer thread. |
 | `common_value`             | Value assigned to a regular chat message. A regular message is any message that is not a 7TV emote when the streamer has a 7TV profile.                                                 |
-| `emote_value`              | Value assigned to a 7TV emote message.                                                                                                                                                  |
+| `emote_value`              | Value assigned to a 7TV emote.                                                                                                                                                  |
 | `excluded_words`           | Words that should be excluded from message frequency counting.                                                                                                                          |
 | `logging_handlers`         | Logging handlers used by the package. See [`examples/logger.py`](examples/logger.py) for an example using multiple handlers.                                                            |
 | `logging_level`            | Logging level used by the package. See the [Python logging documentation](https://docs.python.org/3/library/logging.html#logging-levels).                                               |
@@ -141,6 +134,12 @@ A `Clip` instance contains information about the clip that was created.
 | `timestamp`      | Expected timestamp of the event highlighted by the clip.                                                                                           |
 | `duration`       | Clip duration in seconds.                                                                                                                          |
 
+## Motivation
+
+Manually watching an entire stream to find moments worth clipping is time-consuming.
+
+`twitch_auto_clipper` uses the audience's reaction as a signal: when chat suddenly becomes active around a particular message or emote, the bot can automatically capture the moment.
+
 ## Roadmap
 
 - [x] Analyze Twitch chat through IRC
@@ -148,6 +147,6 @@ A `Clip` instance contains information about the clip that was created.
 - [x] Automatically create clips
 - [x] Monitor multiple live streamers
 - [x] Save clips to a log
-- [ ] Add automated tests
-- [ ] Make pip package with callback that takes Clip and constants as parameters to listener
+- [x] Add automated tests
+- [ ] Pip package
 - [ ] Web page for constants editing
