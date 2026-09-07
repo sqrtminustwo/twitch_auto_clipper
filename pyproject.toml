@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "twitch_auto_clipper"
-version = "0.1.7"
+version = "0.1.9"
 authors = [
   { name="Maksym Ziborov", email="twitch_auto_clipper@blkflag.org" },
 ]

@@ -5,14 +5,20 @@ from os import getenv
 
 load_dotenv()
 
+
+def on_clip(clip):
+    print(clip.message)
+    print(clip.url)
+
+
 clipper = TwitchAutoClipper(
     ["Marlon", "Lacy"],
     getenv("client_id"),
     getenv("client_secret"),
-    on_clip=lambda clip: print(clip),
+    on_clip=on_clip,
     common_value=1,
     emote_value=2,
-    clipable_message_ratio=0.5,
+    clipable_message_ratio=0.1,
 )
 
 clipper.start()

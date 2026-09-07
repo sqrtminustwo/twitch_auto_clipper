@@ -1,9 +1,6 @@
 # https://github.com/scmanjarrez/twitch-chat-irc/blob/master/twitch_chat_irc/twitch_chat_irc.py
 
-from twitch_auto_clipper.chat.Streamer import (
-    StopListeningException,
-    Streamer,
-)
+from twitch_auto_clipper.chat.Streamer import ProtectedVar, Streamer
 
 from datetime import datetime
 import socket
@@ -16,11 +13,16 @@ class TwitchChatIRC:
     __DEFAULT_NICK = "justinfan67420"
     __PORT = 6667
     __PATTERN = re.compile(r":[^ ]+ PRIVMSG [^ ]+ :([^\r\n]*)[\r\n]")
-    __CURRENT_CHANNEL = None
 
     def __init__(self, socket_inj=None):
         self.__NICK = self.__DEFAULT_NICK
         self.__SOCKET = socket.socket() if socket_inj is None else socket_inj
+        self.__CURRENT_CHANNEL = None
+        self.__FINISHED = ProtectedVar(False)
+
+    @property
+    def finished_wait(self):
+        return self.__FINISHED.wait
 
     def connect_to_socket(self) -> None:
         self.__SOCKET.connect((self.__HOST, self.__PORT))
@@ -79,6 +81,9 @@ class TwitchChatIRC:
         try:
             while True:
                 try:
+                    if streamer.stop_listening.value:
+                        break
+
                     new_info = self.__recvall(buffer_size)
 
                     if "PING :tmi.twitch.tv" in new_info:
@@ -102,7 +107,9 @@ class TwitchChatIRC:
 
                         if not streamer.is_live():
                             break
-        except StopListeningException:
-            return
         except Exception as e:
             logging.error(f"Unknown Error: {e}")
+        finally:
+            streamer.join_clipping_thread()
+
+        self.__FINISHED.value = True

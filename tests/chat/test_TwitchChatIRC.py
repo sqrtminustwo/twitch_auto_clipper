@@ -62,11 +62,18 @@ class TestTwitchChatIRC(unittest.TestCase):
 
         self.assert_connection(chat_irc)
 
+    def make_mock_streamer(self):
+        streamer = Mock()
+        streamer.is_live = Mock(return_value=False)
+        streamer.on_message = Mock()
+        streamer.stop_listening.value = False
+
+        return streamer
+
     def test_stop_listen_on_timeout_and_not_live(self):
         chat_irc = self.make_class()
 
-        streamer = Mock()
-        streamer.is_live = Mock(return_value=False)
+        streamer = self.make_mock_streamer()
 
         def sender(_):
             raise s.timeout
@@ -96,9 +103,7 @@ class TestTwitchChatIRC(unittest.TestCase):
         chat_irc = self.make_class()
         self.get_socket(chat_irc).recv = sender
 
-        streamer = Mock()
-        streamer.is_live = Mock(return_value=False)
-        streamer.on_message = Mock()
+        streamer = self.make_mock_streamer()
 
         try:
             with chat_irc as connection:

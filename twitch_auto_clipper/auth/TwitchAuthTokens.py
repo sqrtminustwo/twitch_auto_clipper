@@ -163,7 +163,7 @@ class TwitchAuthTokens:
             t.start()
             self.__webserver_live.value = True
 
-            code.wait()
+            code.wait(timeout=None)
 
             httpd.shutdown()
             httpd.server_close()

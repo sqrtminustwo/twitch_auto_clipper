@@ -3,7 +3,7 @@ from twitch_auto_clipper.auth.TwitchAuthTokens import TwitchAuthTokens
 from twitch_auto_clipper.utils.ProtectedVar import ProtectedVar
 from twitch_auto_clipper.Urls import Urls
 
-from helpers import for_testing_protected, id, join_all
+from tests.helpers import for_testing_protected, id, join_all
 import unittest
 from unittest.mock import Mock, ANY, patch
 from threading import Thread

@@ -15,10 +15,6 @@ from sortedcollections.recipes import ValueSortedDict
 from threading import Thread
 
 
-class StopListeningException(Exception):
-    pass
-
-
 class Streamer:
     def __init__(
         self,
@@ -118,7 +114,7 @@ class Streamer:
         if self.words_dict:
             return self.words_dict.peekitem(index=-1)
 
-    def __join_clipping_thread(self):
+    def join_clipping_thread(self):
         if self.clipping_thread and self.clipping_thread.is_alive():
             logging.info(f"Finishing clipping in {self}...")
             self.clipping_thread.join()
@@ -126,8 +122,7 @@ class Streamer:
 
     def on_message(self, msg: str) -> None:
         if self.stop_listening.value:
-            self.__join_clipping_thread()
-            raise StopListeningException()
+            return
 
         # set to avoid spam messages
         words = set(msg.lower().split(" "))
@@ -170,7 +165,7 @@ class Streamer:
                 log_delimiter(above=False)
 
                 if clipable:
-                    self.__join_clipping_thread()
+                    self.join_clipping_thread()
 
                     clip: Clip = Clip(
                         broadcaster_id=self.id,

@@ -79,20 +79,15 @@ class TestTwitchAutoClipper(unittest.TestCase):
         return thread
 
     def test_join(self):
-        thread = self.make_join()
+        chat = Mock()
 
-        i = 0
+        def raiser(timeout=None, condition=None):
+            raise KeyboardInterrupt
 
-        def raise_join():
-            nonlocal i
-            if i > 0:
-                return
-            i += 1
-            raise KeyboardInterrupt()
+        chat.finished_wait = raiser
 
-        thread.join = raise_join
-
-        self.clipper._TwitchAutoClipper__threads = [thread]
+        self.clipper._TwitchAutoClipper__chats = [chat]
+        self.clipper._TwitchAutoClipper__join_streamer_threads = Mock()
 
         for streamer in self.clipper._TwitchAutoClipper__streamers:
             streamer.stop_listening = Mock()
@@ -102,6 +97,8 @@ class TestTwitchAutoClipper(unittest.TestCase):
 
         for streamer in self.streamers:
             self.assertTrue(streamer.stop_listening.value)
+
+        self.clipper._TwitchAutoClipper__join_streamer_threads.assert_called_once()
 
 
 if __name__ == "__main__":

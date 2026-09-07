@@ -2,6 +2,10 @@ from threading import Condition
 from contextlib import contextmanager
 
 
+class ProtectedVarWaitTimeOut(Exception):
+    pass
+
+
 class ProtectedVar:
     def __init__(self, value=None):
         self.__value = value
@@ -19,7 +23,7 @@ class ProtectedVar:
                 while not condition(self.__value):
                     timed_out = not self.__condition.wait(timeout)
                     if timed_out:
-                        break
+                        raise ProtectedVarWaitTimeOut()
             finally:
                 self.__waiting_count -= 1
 

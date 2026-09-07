@@ -1,3 +1,4 @@
+[![PyPI version](https://img.shields.io/pypi/v/twitch_auto_clipper.svg)](https://pypi.org/project/twitch_auto_clipper/)
 [![Unit Tests](https://github.com/sqrtminustwo/twitch_auto_clipper/actions/workflows/test_runner.yml/badge.svg?branch=main)](https://github.com/sqrtminustwo/twitch_auto_clipper/actions/workflows/test_runner.yml)
 [![Coverage Status](https://coveralls.io/repos/github/sqrtminustwo/twitch_auto_clipper/badge.svg?branch=main)](https://coveralls.io/github/sqrtminustwo/twitch_auto_clipper?branch=main)
 

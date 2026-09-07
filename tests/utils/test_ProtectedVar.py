@@ -1,8 +1,9 @@
-from twitch_auto_clipper.utils.ProtectedVar import ProtectedVar
+from socket import timeout
+from twitch_auto_clipper.utils.ProtectedVar import ProtectedVar, ProtectedVarWaitTimeOut
 
 import unittest
 from threading import Thread
-from helpers import (
+from tests.helpers import (
     create_threads,
     id,
     join_all,
@@ -10,14 +11,23 @@ from helpers import (
     start_all,
     for_testing_protected,
 )
-from utils.LockedCounter import LockedCounter
+from tests.utils.LockedCounter import LockedCounter
 
 
 class TestProtectedVar(unittest.TestCase):
+    def catched_wait(self, var, cond=id):
+        try:
+            if cond is None:
+                var.wait()
+            else:
+                var.wait(cond)
+        except ProtectedVarWaitTimeOut:
+            pass
+
     def test_is_waiting(self):
         var = ProtectedVar(False)
 
-        t = Thread(target=lambda: var.wait(id))
+        t = Thread(target=lambda: self.catched_wait(var))
         t.start()
 
         sleep_conditionally(not var.is_waiting())
@@ -36,7 +46,7 @@ class TestProtectedVar(unittest.TestCase):
 
         def waiter():
             nonlocal done_waiting_count
-            var.wait(id)
+            self.catched_wait(var)
             done_waiting_count += 1
 
         wait_threads = create_threads(waiter)
@@ -54,10 +64,7 @@ class TestProtectedVar(unittest.TestCase):
         var = ProtectedVar(initial)
 
         def waiter():
-            if cond is not None:
-                var.wait(cond)
-            else:
-                var.wait()
+            self.catched_wait(var, cond)
             self.assertEqual(var.value, to_set)
 
         t = Thread(target=waiter)
@@ -95,6 +102,7 @@ class TestProtectedVar(unittest.TestCase):
         should_be_protected = len(wait_threads) - 1
         sleep_conditionally(protected_counter < should_be_protected)
 
+        done.value = True
         join_all(wait_threads)
         self.assertEqual(protected_counter, should_be_protected)
 

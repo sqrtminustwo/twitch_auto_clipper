@@ -8,6 +8,9 @@ from pathlib import Path
 from threading import Lock
 from dotenv import load_dotenv
 import os
+import logging
+
+LOGGING_DIR: Path = Path("log")
 
 
 class Logger:
@@ -40,12 +43,15 @@ class Logger:
 
 load_dotenv()
 
-CLIP_LOGGER = Logger(Clip)
+CLIP_LOGGER = Logger(Clip, LOGGING_DIR)
 
 
 def on_clip(clip):
     CLIP_LOGGER.write(clip)
 
+
+logger_path = LOGGING_DIR / "debug"
+os.makedirs(logger_path, exist_ok=True)
 
 clipper = TwitchAutoClipper(
     ["Marlon", "Lacy"],
@@ -55,6 +61,10 @@ clipper = TwitchAutoClipper(
     common_value=1,
     emote_value=2,
     clipable_message_ratio=0.5,
+    logging_handlers=[
+        logging.FileHandler(logger_path / f"{now_formated()}.txt", mode="a"),
+        logging.StreamHandler(),
+    ],
 )
 
 clipper.start()
