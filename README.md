@@ -8,7 +8,7 @@ Automatically create Twitch clips when chat activity spikes.
 
 Twitch Auto Clipper monitors Twitch chat and detects moments where a large number of viewers send the same emote/message within a short period of time. When activity exceeds a configurable threshold, it automatically creates a Twitch clip.
 
-[demo]
+https://github.com/user-attachments/assets/de26cc92-f84c-4ed1-9942-328684f99298
 
 ## Installation
 
@@ -138,9 +138,9 @@ A `Clip` instance contains information about the clip that was created.
 
 ## Motivation
 
-Manually watching an entire stream to find moments worth clipping is time-consuming.
+There are a lot of AI clippers that are mostly paid services, largely as a result of their high inference costs. But why use AI when, on popular streams, you constantly have thousands of people evaluating the current state of the stream through chat?
 
-`twitch_auto_clipper` uses the audience's reaction as a signal: when chat suddenly becomes active around a particular message or emote, the bot can automatically capture the moment.
+By using the audience's reactions, you can extract clips from Twitch with almost no processing power.
 
 ## Roadmap
 
