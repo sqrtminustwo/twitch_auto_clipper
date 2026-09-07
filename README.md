@@ -152,3 +152,7 @@ By using the audience's reactions, you can extract clips from Twitch with almost
 - [x] Add automated tests
 - [x] Pip package
 - [ ] Web page for constants editing
+- [ ] Clip processing with ffmpeg
+- [ ] Auto posting
+  - [ ] youtube
+  - [ ] tiktok?
