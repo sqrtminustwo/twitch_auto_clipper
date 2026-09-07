@@ -1,3 +1,4 @@
+from twitch_auto_clipper.chat.Streamer import ProtectedVar
 from twitch_auto_clipper.chat.TwitchChatIRC import TwitchChatIRC
 
 import unittest
@@ -5,6 +6,9 @@ from unittest.mock import call, Mock
 import socket as s
 import signal
 from collections.abc import Callable
+from threading import Thread
+
+from twitch_auto_clipper.utils.ProtectedVar import ProtectedVarWaitTimeOut
 
 
 class TestTwitchChatIRC(unittest.TestCase):
@@ -160,6 +164,24 @@ class TestTwitchChatIRC(unittest.TestCase):
             streamer.on_message.assert_has_calls(contents)
 
         self.common_listen(sender, asserts)
+
+    def test_stops_listening(self):
+        chat_irc = self.make_class()
+        chat_irc._TwitchChatIRC__join_channel = Mock()
+        streamer = Mock()
+        streamer.stop_listening.value = True
+
+        thread = Thread(target=chat_irc.listen, args=(streamer,))
+        thread.start()
+
+        try:
+            chat_irc.finished_wait()
+        except ProtectedVarWaitTimeOut:
+            self.fail("Should be finished, got timeout instead.")
+
+        thread.join()
+
+        self.assertTrue(chat_irc._TwitchChatIRC__FINISHED.value)
 
 
 if __name__ == "__main__":

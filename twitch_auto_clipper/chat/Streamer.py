@@ -116,9 +116,7 @@ class Streamer:
 
     def join_clipping_thread(self):
         if self.clipping_thread and self.clipping_thread.is_alive():
-            logging.info(f"Finishing clipping in {self}...")
             self.clipping_thread.join()
-            logging.info(f"Done clipping in {self}.")
 
     def on_message(self, msg: str) -> None:
         if self.stop_listening.value:

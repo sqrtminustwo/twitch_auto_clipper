@@ -171,6 +171,16 @@ class TestStreamer(unittest.TestCase):
             Clip(broadcaster_id=self.id, message="b", message_count=1, ratio=0.5)
         )
 
+    def test_unchanged_on_done_listening(self):
+        streamer = self.make_for_on_message()
+        streamer.stop_listening.value = True
+
+        for msg in "abcd".split():
+            streamer.on_message(msg)
+
+        self.assertFalse(streamer.words_dict)
+        self.assertIsNone(streamer.clipping_thread)
+
 
 if __name__ == "__main__":
     unittest.main()
